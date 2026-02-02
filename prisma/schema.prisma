@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  name        String?
+  password    String
+  role        String
+  createdAt   DateTime @default(now())
+}
+
+model Category {
+	id          String  @id @default(cuid())
+	name        String  @unique
+	slug        String
+	description String
+	Items       Item[]
+  image       String?
+  isActive    Boolean @default(true)
+}
+
+model Item {
+	id          String  @id @default(cuid())
+	name        String
+	slug        String
+  details     String?
+	description String?
+	categoryId  String
+  category    Category  @relation(fields: [categoryId], references: [id])
+	image       Image[]
+	size        Json?
+	prices      Prices?
+  isActive    Boolean   @default(true)
+  isSpecial   Boolean   @default(true)
+  isNew       Boolean   @default(true)
+  isSale      Boolean   @default(false)
+}
+
+model Image {
+  id          String    @id @default(cuid())
+  itemId      String
+  filename    String
+  url         String
+  order       Int
+  item        Item      @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  @@index([itemId])
+}
+
+model Prices {
+  id          String  @id @default(cuid())
+  base        String
+  discounted  String?
+  itemId      String  @unique
+  item        Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
