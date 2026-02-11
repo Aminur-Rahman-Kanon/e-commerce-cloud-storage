@@ -5,11 +5,6 @@ import { Item } from "@/app/model/items";
 import { connectDB } from '@/lib/mongodb';
 import { Types } from 'mongoose'
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_BASE_URL ??
-  "http://localhost:3000";
-
-
 export async function getCategories() {
   await connectDB();
   const categories = await Category.find({ isActive: true }).populate('items').lean({ virtuals: true });
@@ -18,10 +13,9 @@ export async function getCategories() {
 
 
 export async function getSingleItem(id: string): Promise<ItemType | null> {
-    console.log("Fetching item:", id);
+    await connectDB();
 
     if (!id || !Types.ObjectId.isValid(id)) {
-        console.log("Invalid ID");
         return null;
     }
 
@@ -29,8 +23,6 @@ export async function getSingleItem(id: string): Promise<ItemType | null> {
         const item = await Item.findById(id)
             .populate({ path: 'categoryId', select: 'name' })
             .lean();
-
-        console.log("DB result:", item);
 
         if (!item) return null;
 
