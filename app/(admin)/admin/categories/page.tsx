@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useEffect, useState } from 'react';
 import { CategoriesType } from '@/app/(admin)/admin/type/categories';
 import CategoryItem from '../component/categoryItem/categoryItem';
