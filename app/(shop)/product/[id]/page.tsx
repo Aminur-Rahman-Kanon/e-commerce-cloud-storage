@@ -1,4 +1,5 @@
-import { ItemType } from "@/app/(admin)/admin/type/items";
+export const dynamic = 'force-dynamic';
+
 import { Metadata } from "next";
 import Product from "../../components/product/product";
 import { notFound } from "next/navigation";
@@ -20,8 +21,6 @@ export async function generateMetadata({ params }: PageProps):Promise<Metadata>{
     }
 
     const product = await getSingleItem(id);
-
-    console.log(product);
 
     if (!product) return {
         title: 'Product Not Found',
