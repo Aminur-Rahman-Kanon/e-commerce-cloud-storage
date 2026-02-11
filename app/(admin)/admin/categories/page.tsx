@@ -9,14 +9,13 @@ export default function Page () {
     const [categories, setCategories] = useState<CategoriesType[] | []>([])
     
     useEffect(() => {
-        fetch('/api/admin/products/category')
-        .then(res => res.json())
-        .then(data => {
-            if (data.categories && data.categories.length){
-                setCategories(data.categories)
-            }
-        })
-        .catch(err => console.error(err))
+        (async () => {
+            const res = await fetch('/api/admin/products/category');
+
+            if (!res.ok) return;
+            const data = await res.json();
+            setCategories(data?.categories);
+        })()
     }, []);
 
     const headers = categories.length ? Object.keys(categories[0]).filter(hdr => hdr !== 'createdAt' && hdr !== 'updatedAt' && hdr !== '__v')
