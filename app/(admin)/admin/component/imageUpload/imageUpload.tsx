@@ -1,5 +1,4 @@
 'use client';
-import { ImageType } from '@/app/(admin)/admin/type/items';
 
 import Image from "next/image";
 import React from 'react';
