@@ -45,11 +45,8 @@ export async function generateMetadata({ params }: PageProps):Promise<Metadata>{
 
 export default async function Page ({ params }: PageProps) {
     const { id } = await params;
-
-    console.log(id);
-
+    
     const product = await getSingleItem(id);
-    console.log(product);
 
     if (!product) {
         return notFound()

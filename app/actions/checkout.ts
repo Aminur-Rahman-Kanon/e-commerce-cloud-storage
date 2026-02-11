@@ -1,5 +1,6 @@
 'use server';
 
+import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { stripe } from '@/lib/stripe';
 import { redirect } from 'next/navigation';
@@ -9,6 +10,9 @@ import { expressShipping, standardShipping, SupportedCurrency } from '../(admin)
 
 export async function createCheckout(basket: BasketItem[], curr: SupportedCurrency) {
     if (!basket || !curr) throw new Error('no price_info provided!');
+
+    const headersList = headers();
+    const origin = (await headersList).get('origin');
 
     //create order document
     const order = await createTempOrder(basket);
@@ -57,8 +61,8 @@ export async function createCheckout(basket: BasketItem[], curr: SupportedCurren
             allowed_countries: [...allowedCountries[curr]]
         },
         shipping_options: shippingOptions,
-        success_url: `${process.env.NEXT_PUBLIC_APP_URL}/success`,
-        cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/cancel`,
+        success_url: `${origin}/success`,
+        cancel_url: `${origin}/cancel`,
         metadata: {
             orderId: order._id.toString(),
         }
