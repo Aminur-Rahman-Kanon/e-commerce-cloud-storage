@@ -26,7 +26,7 @@ export default function Page () {
             </div>
             <div>
                 {
-                    items.length ? items.map((itms, idx) => <Item key={itms.id} index={idx} item={itms}/> ) : 'No item'
+                    items.length ? items.map((itms, idx) => <Item key={itms._id} index={idx} item={itms}/> ) : 'No item'
                 }
             </div>
         </div>

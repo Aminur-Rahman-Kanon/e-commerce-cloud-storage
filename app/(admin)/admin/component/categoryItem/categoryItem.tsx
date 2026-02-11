@@ -7,6 +7,9 @@ import { toast } from 'react-toastify';
 import { toBoolean } from '@/app/(admin)/admin/utilities/utilities';
 import Image from 'next/image';
 import { X } from 'lucide-react'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import Modal from '@/app/(shop)/components/layout/modal/modal';
 
 const inputClassName = 'block w-[200px] flex-none p-2 border border-gray-300';
 
@@ -17,6 +20,10 @@ export default function CategoryItem({ category, index }: { category: Categories
     const [img, setImg] = useState<File | null>(null);
 
     const [submitBtnDisable, setSubmitBtnDisable] = useState<boolean>(true);
+    const [submitBtnSpinner, setSubmitBtnSpinner] = useState<boolean>(false);
+    const [removeBtnDisable, setRemoveBtnDisable] = useState<boolean>(false);
+    const [removeBtnSpinner, setRemoveBtnSpinner] = useState<boolean>(false);
+    const [displayWarningMsg, setDisplayWarningMsg] = useState<boolean>(false);
 
     useEffect(() => {
         if (category){
@@ -60,8 +67,6 @@ export default function CategoryItem({ category, index }: { category: Categories
 
         if (!file) return;
 
-        //validation
-
         setImg(file)
         const objectUrl = URL.createObjectURL(file);
         setCopiedItem(prev => prev ? {
@@ -72,6 +77,9 @@ export default function CategoryItem({ category, index }: { category: Categories
 
     async function submitHandler (e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setSubmitBtnDisable(true);
+        setSubmitBtnSpinner(true);
+
         const formData = new FormData();
 
         formData.append('data', JSON.stringify(copiedItem));
@@ -93,28 +101,38 @@ export default function CategoryItem({ category, index }: { category: Categories
             }, 3000);
 
         } catch (error) {
-            console.error(error);
+            setSubmitBtnDisable(false);
+            setSubmitBtnSpinner(false);
+            return toast.error(`${error}`);
         }
     }
 
     const removeCategoryHandler = async (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setRemoveBtnDisable(true);
+        setRemoveBtnSpinner(true);
 
-        const res = await fetch('/api/admin/products/category', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: category.id })
-        })
-
-        if (!res.ok) return toast.error(`Failed to delete ${category.name}`);
-
-        toast.success('Successfully deleted');
-
-        return setTimeout(() => {
-            window.location.reload();
-        }, 3000)
+        try {
+            const res = await fetch('/api/admin/products/category', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: category._id })
+            })
+    
+            if (!res.ok) return toast.error(`Failed to delete ${category.name}`);
+    
+            toast.success('Successfully deleted');
+    
+            return setTimeout(() => {
+                window.location.reload();
+            }, 3000)
+        } catch (error) {
+            setRemoveBtnSpinner(false);
+            setRemoveBtnDisable(false);
+            return toast.error(`${error}`);
+        }
     }
 
     const removeImgHandler = (e:React.MouseEvent<HTMLButtonElement>) => {
@@ -127,79 +145,117 @@ export default function CategoryItem({ category, index }: { category: Categories
         }: prev)
     }
 
+    const displayRemoveWarningMsg = <div className='w-full p-2 flex flex-col justify-center items-center'>
+        <h2 className='text-sm font-normal'>
+            {`Are you sure want to remove ${category.name} ?`}
+        </h2>
+        <p className='text-sm font-normal text-center'>
+            {`Removing ${category.name} will remove all the items that are of this category`}
+        </p>
+        <div className='w-full flex justify-between items-center mt-8'>
+            <button className='w-[150px] h-[40px] bg-green-500 text-white-500'
+                    disabled={removeBtnDisable}
+                    onClick={removeCategoryHandler}>
+                {
+                    removeBtnSpinner ? <FontAwesomeIcon icon={faSpinner}
+                                                        spinPulse
+                                                        className='text-sm text-white' />
+                                        :
+                                        'yes'
+                }
+            </button>
+            <button className='w-[150px] h-[40px] bg-red-500 text-white-500'
+                    onClick={() => setDisplayWarningMsg(false)}>
+                No
+            </button>
+        </div>
+    </div>
+
     const imgSrc = copiedItem?.image ? copiedItem.image : '/images/icons/placeholder.png';
 
     return (
-        <form className='w-full my-8 flex justify-center items-center'
-              onSubmit={submitHandler}>
-            <input type='text'
-                    name='id'
-                    disabled
-                    defaultValue={category.id}
-                    className={inputClassName} />
+        <>
+            <Modal isOpen={displayWarningMsg}>
+                { displayRemoveWarningMsg }
+            </Modal>
+            <form className='w-full my-8 flex justify-center items-center'
+                onSubmit={submitHandler}>
+                <input type='text'
+                        name='id'
+                        disabled
+                        defaultValue={category._id}
+                        className={inputClassName} />
 
-            <input type='text'
-                    name='name'
-                    defaultValue={category.name}
-                    disabled
-                    className={inputClassName} />
+                <input type='text'
+                        name='name'
+                        defaultValue={category.name}
+                        disabled
+                        className={inputClassName} />
 
-            <input type='text'
-                    name='slug'
-                    defaultValue={category.slug}
-                    disabled
-                    className={inputClassName} />
-            
-            <input type='text'
-                    name='description'
-                    defaultValue={category.description}
-                    onChange={onChangeHandler}
-                    className={inputClassName} />
-            
-            <div className='w-[200px] h-[100px] p-5 flex justify-center items-center'>
-                <label className='relative w-full flex flex-col justify-center items-center overflow-hidden'
-                        htmlFor={`input-el-${index}`} >
-                    <Image src={imgSrc}
-                            alt='placeholder'
-                            width={50}
-                            height={50}
-                            style={{ objectFit:'cover' }} />
-                    <p className='text-sm text-center mt-5'>Tap to add Image</p>
-                    <button className='absolute top-[-1px] right-[-1px] w-[20px] h-[20px]'
+                <input type='text'
+                        name='slug'
+                        defaultValue={category.slug}
+                        disabled
+                        className={inputClassName} />
+                
+                <input type='text'
+                        name='description'
+                        defaultValue={category.description}
+                        onChange={onChangeHandler}
+                        className={inputClassName} />
+                
+                <div className='w-[200px] h-[100px] p-5 flex justify-center items-center'>
+                    <label className='relative w-full flex flex-col justify-center items-center overflow-hidden'
+                            htmlFor={`input-el-${index}`} >
+                        <Image src={imgSrc}
+                                alt='placeholder'
+                                width={50}
+                                height={50}
+                                style={{ objectFit:'cover' }} />
+                        <p className='text-sm text-center mt-5'>Tap to add Image</p>
+                        <button className='absolute top-[-1px] right-[-1px] w-[20px] h-[20px]'
+                                type='button'
+                                onClick={removeImgHandler}>
+                            <X size={16} color='gray' />
+                        </button>
+                    </label>
+                    <input type='file'
+                            id={`input-el-${index}`}
+                            onChange={imgUploadHanlder}
+                            style={{ display:'none' }}
+                            className='hidden w-full' />
+                </div>
+                
+                <select defaultValue={category.isActive+'' || 'Please Select'}
+                        name='isActive'
+                        className={inputClassName}
+                        onChange={onChangeHandler} >
+                    <option disabled>Please Select</option>
+                    <option value={'true'}>True</option>
+                    <option value={'false'}>False</option>
+                </select>
+
+                <div>
+                    <button className='w-[100px] h-[40px] bg-red-500 text-white hover:bg-red-700'
                             type='button'
-                            onClick={removeImgHandler}>
-                        <X size={16} color='gray' />
+                            disabled={removeBtnDisable}
+                            onClick={() => setDisplayWarningMsg(true)}>
+                        Remove
                     </button>
-                </label>
-                <input type='file'
-                        id={`input-el-${index}`}
-                        onChange={imgUploadHanlder}
-                        style={{ display:'none' }}
-                        className='hidden w-full' />
-            </div>
-            
-            <select defaultValue={category.isActive+'' || 'Please Select'}
-                    name='isActive'
-                    className={inputClassName}
-                    onChange={onChangeHandler} >
-                <option disabled>Please Select</option>
-                <option value={'true'}>True</option>
-                <option value={'false'}>False</option>
-            </select>
-
-            <div>
-                <button className='w-[100px] h-[40px] bg-red-500 text-white hover:bg-red-700'
-                        type='button'
-                        onClick={removeCategoryHandler}>
-                    Remove
+                </div>
+                <button className='w-[100px] h-[40px] border border-green-500 bg-green-500 text-white
+                                    disabled:opacity-50 disabled:cursor-not-allowed'
+                        type='submit'
+                        disabled={submitBtnDisable} >
+                    {
+                        submitBtnSpinner ? <FontAwesomeIcon icon={faSpinner}
+                                                            spinPulse
+                                                            className='text-sm text-white' />
+                                            :
+                                            'Submit'
+                    }
                 </button>
-            </div>
-            <button className='w-[100px] h-[40px] border border-green-500 bg-green-500 text-white
-                                disabled:opacity-50 disabled:cursor-not-allowed'
-                    type='submit'
-                    disabled={submitBtnDisable} >
-                Submit
-            </button>
-        </form>
+            </form>
+        </>
     )
 }

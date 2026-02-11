@@ -2,7 +2,8 @@ import { ItemType } from "@/app/(admin)/admin/type/items";
 import { Metadata } from "next";
 import Product from "../../components/product/product";
 import { notFound } from "next/navigation";
-import { prisma } from "@/lib/prisma";
+import { getSingleItem } from "@/lib/items";
+
 
 type PageProps = {
     params: Promise<{
@@ -18,15 +19,9 @@ export async function generateMetadata({ params }: PageProps):Promise<Metadata>{
         robots: { index: true }
     }
 
-    const product = await prisma.item.findUnique({
-        where: {
-            id: id
-        },
-        include: {
-            image: true,
-            prices: true
-        }
-    })
+    const product = await getSingleItem(id);
+
+    console.log(product);
 
     if (!product) return {
         title: 'Product Not Found',
@@ -41,7 +36,7 @@ export async function generateMetadata({ params }: PageProps):Promise<Metadata>{
             description: product.details ?? '',
             images: [
                 {
-                    url: product.image[0].url,
+                    url: product.image[0],
                     alt: product.name
                 }
             ]
@@ -52,32 +47,15 @@ export async function generateMetadata({ params }: PageProps):Promise<Metadata>{
 export default async function Page ({ params }: PageProps) {
     const { id } = await params;
 
-    const product = await prisma.item.findUnique({
-        where: {
-            id: id
-        },
-        include: {
-            image: true,
-            prices: true
-        }
-    })
+    const product = await getSingleItem(id);
 
     if (!product) {
         return notFound()
     };
 
-      const transformedProduct: ItemType = {
-        ...product,
-        description: product.description || undefined, // Convert null to undefined
-        details: product.details || undefined,
-        image: product.image || [],
-        prices: product.prices || undefined,
-        size: product.size ? JSON.parse(JSON.stringify(product.size)) : undefined
-    };
-
     return (
         <div className="w-full my-15 lg:my-20">
-            <Product product={transformedProduct} />
+            <Product product={product} />
         </div>
     )
 }

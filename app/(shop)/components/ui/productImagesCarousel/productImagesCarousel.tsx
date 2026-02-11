@@ -1,12 +1,11 @@
 'use client';
 
 import useEmblaCarousel from 'embla-carousel-react';
-import { ImageType } from '@/app/(admin)/admin/type/items';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 type Props = {
-    images: ImageType[]
+    images: string[]
 }
 
 export default function ProductImagesCarousel ({ images }: Props){
@@ -14,9 +13,9 @@ export default function ProductImagesCarousel ({ images }: Props){
 
     if (!images.length) return;
 
-    const displayImages = images.map(img => <div key={img.id} className='embla__slide'>
+    const displayImages = images.map((img, idx) => <div key={idx} className='embla__slide'>
         <div className='relative w-full h-[700px]'>
-            <Image src={img.url}
+            <Image src={img}
                     alt='antorbon'
                     fill
                     className='object-cover' />

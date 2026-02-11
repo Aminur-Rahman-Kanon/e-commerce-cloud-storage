@@ -1,8 +1,11 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { v4 as uuidv4 } from 'uuid'
 import suparbaseServer from '@/lib/superbaseServer';
 import { sanitizeStorageKey } from '../../utilities/utilities';
+import { Category } from '@/app/model/category';
+import { Item } from '@/app/model/items';
+import { connectDB } from '@/lib/mongodb';
+import { CategoriesType } from '@/app/(admin)/admin/type/categories';
 
 export const runtime = 'nodejs';
 
@@ -16,7 +19,10 @@ type DataObject = {
 
 export async function GET () {
     try {
-        const categories = await prisma.category.findMany();        
+        await connectDB();
+
+        const categories = await Category.find().sort({ createdAt: -1 }).lean();
+        
         return NextResponse.json({ categories });
     } catch (error) {
         return NextResponse.json(
@@ -26,25 +32,23 @@ export async function GET () {
     }
 }
 
-
 export async function POST (req:Request) {
     try {
+        await connectDB();
+
         const formData = await req.formData();
         const data = formData.get('data') as string;
         const file = formData.get('img') as File;
         const parsedData: DataObject = JSON.parse(data);
-        parsedData.image = ''
-        parsedData.name = sanitizeStorageKey(parsedData.name);
         
         if (!parsedData) return NextResponse.json({ error: 'no data provided' }, { status: 400 });
+        parsedData.image = ''
+        parsedData.name = sanitizeStorageKey(parsedData.name);
+        parsedData.slug = sanitizeStorageKey(parsedData.slug);
+        
+        const isItemExist = await Category.findOne({ name: parsedData.name });
 
-        const isItemExist = await prisma.category.findUnique({
-            where: {
-                name: parsedData.name
-            }
-        })
-
-        if (isItemExist) return NextResponse.json({ error: 'item already exits' }, { status: 401 });
+        if (isItemExist) return NextResponse.json({ error: `${parsedData.name} exist!` }, { status: 204 });
         
         if (file && file.type.startsWith('image/')){
             const arrayBuffer = await file.arrayBuffer();
@@ -54,23 +58,19 @@ export async function POST (req:Request) {
             const { data, error } = await suparbaseServer.storage.from('images').upload(filePath, new Uint8Array(arrayBuffer), {
                 contentType: file.type
             });
-
             
             if (error) {
-                console.log(error)
                 return NextResponse.json({ error: error.message }, { status: 500 })
             }
 
-            const url = await suparbaseServer.storage.from('images').getPublicUrl(filePath)
+            const url = suparbaseServer.storage.from('images').getPublicUrl(filePath)
             if (!url.data) return NextResponse.json({ error: 'server error' }, { status: 500 })
             
             parsedData.image = url.data.publicUrl ?? null
         }
 
-        await prisma.category.create({
-            data: {
-                ...parsedData
-            }
+        await Category.create({
+            ...parsedData
         })
 
         return NextResponse.json( { status: 200 });
@@ -79,21 +79,18 @@ export async function POST (req:Request) {
     }
 }
 
-
 export async function PUT (req: Request) {
     try {
-        const formData = await req.formData()
-        const stringyData = formData.get('data') as string
-        const data = JSON.parse(stringyData);
+        await connectDB();
+
+        const formData = await req.formData();
+        const stringyData = formData.get('data') as string;
+        const data:CategoriesType = JSON.parse(stringyData);
         const img = formData.get('img') as File;
     
         if (!data) return NextResponse.json({ error: 'no data provided' }, { status: 400 });
 
-        const item = await prisma.category.findUnique({
-            where: {
-                id: data.id
-            }
-        })
+        const item = await Category.findOne({ _id: data._id });
 
         if (!item) return NextResponse.json({ error: 'invalid request' }, { status: 400 });
 
@@ -110,7 +107,7 @@ export async function PUT (req: Request) {
                 const { error } = await suparbaseServer.storage.from(process.env.SUPERBASE_BUCKET_NAME!).remove(paths);
 
                 if (error) return NextResponse.json({ error }, { status: 500 });
-                data.image = null;
+                data.image = '';
             }
         }
     
@@ -143,18 +140,7 @@ export async function PUT (req: Request) {
             data.image = urlObj.data.publicUrl ?? null
         }
 
-        const updatedData = await prisma.category.update({
-            where: {
-                id: data.id
-            },
-            data: {
-                name: data.name,
-                slug: data.slug,
-                description: data.description,
-                image: data.image,
-                isActive: data.isActive
-            }
-        })
+        const updatedData = await Category.updateOne({ _id: data._id }, { ...data })
     
         return NextResponse.json(updatedData, { status: 200 });
     } catch (error) {
@@ -164,29 +150,68 @@ export async function PUT (req: Request) {
 
 export async function DELETE (req: Request) {
     const { id } = await req.json();
-
-    try {
-        const category = await prisma.category.findUnique({
-            where: {
-                id: id
-            }
-        })
     
+    try {
+        await connectDB();
+        
+        const category = await Category.findOne({ _id: id });
+
         if (!category) return NextResponse.json({ error: 'not found' }, { status: 404 });
     
-        const { data, error:imgListingError } = await suparbaseServer.storage.from(process.env.SUPERBASE_BUCKET_NAME!).list(category.name);
-        if (imgListingError) return NextResponse.json({ imgListingError }, { status: 500 });
+        const { data:imgList, error:imgListingError } = await suparbaseServer
+            .storage
+            .from(process.env.SUPERBASE_BUCKET_NAME!)
+            .list(`categories/${category.name}`);
+        
+        if (imgListingError) {
+            return NextResponse.json({ imgListingError }, { status: 500 })
+        };
 
-        const imgsToDelete = data.map(img => `${category.name}/${img.name}`);
-        const { error:imgDeleteError } = await suparbaseServer.storage.from(process.env.SUPERBASE_BUCKET_NAME!).remove(imgsToDelete);
-
-        if (imgDeleteError) return NextResponse.json({ imgDeleteError }, { status: 400 })
-
-        await prisma.category.delete({
-            where: {
-                id: id
+        if (imgList.length) {
+            const imgsToDelete = imgList.map(img => `categories/${category.name}/${img.name}`);
+            const { error:imgDeleteError } = await suparbaseServer.storage
+                .from(process.env.SUPERBASE_BUCKET_NAME!)
+                .remove(imgsToDelete);
+            if (imgDeleteError) {
+                return NextResponse.json({ imgDeleteError }, { status: 400 })
             }
-        })
+        }
+
+        await Category.deleteOne({ _id: id });
+
+        const items = await Item.find({ categoryId: category._id });
+
+        if (!items.length) {
+            return NextResponse.json({ error: 'server error' }, { status: 500 })
+        };
+
+        for (const item of items) {
+            const bucketDir = `items/${item.name}`;
+
+            const { data: imgs, error: imgListingError } = await suparbaseServer
+                .storage
+                .from(process.env.SUPERBASE_BUCKET_NAME!)
+                .list(bucketDir);
+            
+            if (imgListingError) {
+                return NextResponse.json(imgListingError, { status: 500 })
+            };
+
+            if (imgs.length){
+                const imgsToDelete = imgs.map(img => `${bucketDir}/${img.name}`);
+    
+                const { error: imgDeleteError } = await suparbaseServer
+                    .storage
+                    .from(process.env.SUPERBASE_BUCKET_NAME!)
+                    .remove(imgsToDelete);
+    
+                if (imgDeleteError) {
+                    return NextResponse.json(imgDeleteError, { status: 500 })
+                };
+    
+                await Item.deleteMany({ categoryId: category._id });
+            }
+        }
 
         return NextResponse.json({ message: 'success' }, { status: 200 })
     } catch (error) {

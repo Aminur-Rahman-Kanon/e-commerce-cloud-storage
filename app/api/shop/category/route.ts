@@ -3,9 +3,6 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcrypt'
 
 export async function GET () {
-    const t = await bcrypt.hash('admin@123', 10);
-
-    console.log(t)
     try {
         const category = await prisma.category.findMany({
             where: {

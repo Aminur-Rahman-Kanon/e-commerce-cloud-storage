@@ -17,11 +17,10 @@ export default function Page () {
             }
         })
         .catch(err => console.error(err))
-    }, [])
+    }, []);
 
-    console.log(categories);
-
-    const headers = categories.length ? Object.keys(categories[0]).map(itm => <span key={itm} className='w-[200px] p-2 border border-gray-300 capitalize'>
+    const headers = categories.length ? Object.keys(categories[0]).filter(hdr => hdr !== 'createdAt' && hdr !== 'updatedAt' && hdr !== '__v')
+                    .map(itm => <span key={itm} className='w-[200px] p-2 border border-gray-300 capitalize'>
         {itm}
     </span>) : [];
     headers.push(<span key={'action'} className='w-[200px] p-2 border border-gray-300 capitalize'>Action</span>);
@@ -37,11 +36,11 @@ export default function Page () {
             </div>
             <div className='w-full mt-15 flex flex-col justify-center items-center space-y-6'>
                 <div className='w-full flex justify-center items-center'>
-                    {headers}
+                    {categories.length ? headers : 'No Categories'}
                 </div>
                 <div className='w-full flex flex-col justify-center items-center space-y-6'>
                     {
-                        categories.map((itm, idx) => <CategoryItem key={itm.id} category={itm} index={idx}/>)
+                        categories.map((itm, idx) => <CategoryItem key={itm._id} category={itm} index={idx}/>)
                     }
                 </div>
             </div>

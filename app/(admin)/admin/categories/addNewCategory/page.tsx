@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { toBoolean, validateImage } from '@/app/(admin)/admin/utilities/utilities';
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 type DataType = {
     name: string,
@@ -23,6 +25,7 @@ export default function Page () {
 
     const [img, setImg] = useState<FileType | null>(null);
     const [btnDisable, setBtnDisable] = useState<boolean>(true);
+    const [spinner, setSpinner] = useState<boolean>(false)
 
     useEffect(() => {
         const keys:(keyof DataType)[] = ['name', 'slug', 'description'];
@@ -42,8 +45,6 @@ export default function Page () {
         else {
             setBtnDisable(true);
         }
-
-        console.log(isTrue);
     }, [data])
 
     function onChangeHandler (e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement >) {
@@ -86,7 +87,8 @@ export default function Page () {
 
     async function submitHandler (e:React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
-
+        
+        setSpinner(true);
         setBtnDisable(true);
 
         if (!data.name || !data.slug || !data.description) return;
@@ -114,6 +116,8 @@ export default function Page () {
             }, 2700);
         }
         catch (error: unknown) {
+            setSpinner(false);
+            setBtnDisable(false);
             if (error instanceof Error) {
                 // preserves original message and stack
                 return toast.error(`${error.message}`);
@@ -181,7 +185,13 @@ export default function Page () {
                         disabled={btnDisable}
                         className="w-full h-[40px] mt-15 bg-green-500 text-white hover:bg-green-600
                                     disabled:bg-green-300 disabled:cursor-not-allowed" >
-                    Submit
+                    {
+                        spinner ? <FontAwesomeIcon icon={faSpinner}
+                                                    spinPulse
+                                                    className="text-sm text-white"/>
+                                :
+                                'Submit'
+                    }
                 </button>
             </form>
         </div>

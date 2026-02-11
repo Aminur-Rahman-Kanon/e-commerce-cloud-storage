@@ -1,4 +1,4 @@
-import { getCategories } from "@/lib/products"
+import { getCategories } from "@/lib/items"
 import { ItemType } from "@/app/(admin)/admin/type/items";
 import ProductCard from "../productCard/productCard";
 
@@ -12,11 +12,12 @@ export default async function Products() {
 
     if (!categories.length) return;
 
+    const category = categories[0];
 
-    const displayCategories =  categories.map(cat => <div key={cat.id}
+    const displayCategories =  <div key={category.id}
                                 className="w-full h-full flex flex-col justify-center items-center spacey-4">
         <h2 className="text-2xl font-light tracking-wider uppercase text-gray-500">
-            {cat.name}
+            {category.name}
         </h2>
 
         <div className="w-full my-[50px] grid place-items-center gap-y-20
@@ -25,10 +26,10 @@ export default async function Products() {
                         md:grid-cols-2
                         lg:grid-cols-3">
             {
-                cat.Items.map(itm => <ProductCard key={itm.id} product={itm as ItemType}/>)
+                category.items.map((itm:ItemType, idx:number) => <ProductCard key={idx} product={itm}/>)
             }
         </div>
-    </div>)
+    </div>
 
     return (
         <div className="w-full max-w-[1400px] mx-auto space-y-10 p-3">

@@ -1,20 +1,5 @@
 import { NewItemType } from "../type/items";
 
-export function getUserToken() {
-    if (typeof window === 'undefined') return;
-    let token = null;
-
-    const storage = localStorage.getItem('token');
-    if (storage){
-        const parsed = JSON.parse(storage);
-        if ('token' in parsed){
-            return token = parsed;
-        }
-    }
-
-    return token;
-}
-
 export function toBoolean (value:string): boolean {
     return value === 'true';
 }
@@ -68,3 +53,75 @@ export function isFormValid (keys:(keyof NewItemType)[], form:NewItemType) {
   });
   return isFormValid;
 }
+
+export type SupportedCurrency =  'usd' | 'eur' | 'gbp' | 'cad'
+
+export const supportedCurrencies: Record<SupportedCurrency, number> = {
+  'usd': 599,
+  'eur': 549,
+  'gbp': 499,
+  'cad': 589
+};
+
+export function standardShipping(currency: SupportedCurrency) {
+
+  return {
+    shipping_rate_data: {
+      display_name: 'Standard Shipping',
+      type: 'fixed_amount',
+      fixed_amount: {
+        amount: supportedCurrencies[currency],
+        currency,
+      },
+      delivery_estimate: {
+        minimum: { unit: 'business_day', value: 3 },
+        maximum: { unit: 'business_day', value: 5 },
+      },
+      metadata: {
+        code: 'STANDARD',
+        label: 'standard',
+      },
+    },
+  };
+}
+
+export function expressShipping(currency: SupportedCurrency) {
+
+  const prices: Record<SupportedCurrency, number> = {
+    'usd': 899,
+    'eur': 849,
+    'gbp': 599,
+    'cad': 889
+  };
+
+  return {
+    shipping_rate_data: {
+        display_name: 'Express Shipping',
+        type: 'fixed_amount',
+        fixed_amount: {
+            amount: prices[currency],
+            currency: currency
+        },
+        delivery_estimate: {
+            maximum: { unit: 'day', value: 1 }
+        },
+        metadata: {
+            code: 'EXPRESS',
+            label: 'express'
+        }
+    }
+  }
+}
+
+export function countryCodeToName(
+  code: string,
+  locale = 'en'
+): string {
+  const displayNames = new Intl.DisplayNames(
+    [locale],
+    { type: 'region' }
+  );
+
+  return displayNames.of(code) ?? code;
+}
+

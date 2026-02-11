@@ -38,7 +38,7 @@ export default function Product ({ product }: Props) {
                                 lg:w-1/2">
                     <div className="w-full flex justify-start items-center gap-2">
                         {
-                            product.isNew ? <span className="w-[50px] h-[25px] p-1 flex justify-center items-center
+                            product.isNewItem ? <span className="w-[50px] h-[25px] p-1 flex justify-center items-center
                                                             bg-yellow-700 text-white text-sm font-normal">
                                 New
                             </span> : null

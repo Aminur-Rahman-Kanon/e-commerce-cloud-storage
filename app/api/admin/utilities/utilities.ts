@@ -8,7 +8,6 @@ export async function validateImage(img: File){
     try {
         const buffer = Buffer.from(await img.arrayBuffer());
         const type = await fileTypeFromBuffer(buffer);
-        console.log(type);
     
         if (!type) {
             throw new Error("Invalid image file");
@@ -21,7 +20,6 @@ export async function validateImage(img: File){
 
         return cleanBuffer;
     } catch (error) {
-        console.error(error);
         return;
     }
 }
@@ -73,7 +71,7 @@ export function sanitizeStorageKey(
     // Remove diacritics
     .replace(/[\u0300-\u036f]/g, "")
     // Remove everything except ASCII letters, numbers, space, hyphen
-    .replace(/[^a-zA-Z0-9\s-]/g, "")
+    .replace(/[^a-zA-Z0-9\s-&]/g, "")
     // Collapse spaces
     .replace(/\s+/g, " ")
     .trim()

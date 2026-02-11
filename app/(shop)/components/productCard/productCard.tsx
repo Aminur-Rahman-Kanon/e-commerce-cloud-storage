@@ -1,26 +1,27 @@
 'use client';
-import { ItemType } from '@/app/(admin)/admin/type/items';
+
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-export default function ProductCard ({ product }: { product: ItemType }) {
+export default function ProductCard ({ product }: { product: any }) {
+    
     if (!product) return;
-
+    
     const addToCartHandler = (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
     }
-
+    
     return (
-        <Link href={`/product/${product.id}`}
+        <Link href={`/product/${product._id}`}
               className='w-full h-full group flex flex-col justify-cetner items-center
                         max-w-[330px]
                         sm:max-w-[280px]
                         md:max-w-[280px]
                         lg:max-w-[330px]'>
 
-            <div className='relative w-[calc(100%-50px)] h-[330px] aspect-[3/4] flex justify-center items-center z-10'>
-                <Image src={product.image[0].url}
+            <div className='relative w-[calc(100%-50px)] h-[330px] aspect-[3/4] z-10 rounded overflow-hidden'>
+                <Image src={product.image[0]}
                         alt={product.name}
                         fill
                         className='object-cover' />

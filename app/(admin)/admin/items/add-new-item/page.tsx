@@ -53,7 +53,7 @@ export default function page () {
             const res = await fetch('/api/admin/products/category');
             const data = await res.json();
             const cat:CategoriesType[] = data.categories
-            const catego:Category[] = cat.map(itm => ({ id: itm.id, name: itm.name }));
+            const catego:Category[] = cat.map(itm => ({ id: itm._id, name: itm.name }));
             setCategory(catego)
         })()
     }, [])
@@ -232,11 +232,13 @@ export default function page () {
                             onChange={selectInputHandler}>
                         <option disabled>Please Select</option>
                         {
-                            category.map(cat => <option key={cat.id}
+                            category.length ? category.map(cat => <option key={cat.id}
                                                         value={cat.id}
                                                         className='capitalize' >
                                 {cat.name}
                             </option>)
+                            :
+                            <option>No Category</option>
                         }
                     </select>
                 </div>

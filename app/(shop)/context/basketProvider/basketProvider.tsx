@@ -38,11 +38,11 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
 
   const addItem = (product: BasketItem) => {
     setItems(prev => {
-      const existing = prev.find(items => items.item.id === product.item.id);
+      const existing = prev.find(items => items.item._id === product.item._id);
 
       if (existing) {
         return prev.map(items =>
-          items.item.id === product.item.id
+          items.item._id === product.item._id
             ? { ...items, quantity: items.quantity + 1 }
             : items
         );
@@ -56,7 +56,7 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
     setItems(prev =>
       prev
         .map(items =>
-          items.item.id === id
+          items.item._id === id
             ? { ...items, quantity: items.quantity - 1 }
             : items
         )

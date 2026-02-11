@@ -1,5 +1,7 @@
 'use client';
+
 import Link from 'next/link';
+import useLoggedIn from '../../../hooks/useLoggedIn';
 
 const elLink = [
     ,{ id: 1, title: 'Dashboard', href: '/admin' }
@@ -10,8 +12,13 @@ const elLink = [
 ]
 
 export default function Sidebar() {
+
+  const user = useLoggedIn();
+
+  if (user.role !== 'admin') return;
+
   return (
-    <aside className="sticky top-0 left-0 w-[350px] h-screen bg-gray-900 text-white flex flex-col">
+    <div className="w-[300px] h-screen bg-gray-900 text-white">
       <div className="p-6 text-xl font-bold border-b border-gray-800">
         Admin Panel
       </div>
@@ -27,6 +34,6 @@ export default function Sidebar() {
           </Link>
         ))}
       </nav>
-    </aside>
+    </div>
   );
 }

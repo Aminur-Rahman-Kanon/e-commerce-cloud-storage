@@ -5,6 +5,8 @@ import { toBoolean } from '@/app/(admin)/admin/utilities/utilities';
 import { toast } from "react-toastify";
 import _ from 'lodash';
 import Modal from "@/app/(shop)/components/layout/modal/modal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 const containerClassName = 'w-full my-3 flex flex-col justify-center items-left space-y-3';
 const labelClassName = 'w-180px capitalize font-medium';
@@ -17,9 +19,10 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
     const [copiedProduct, setCopiedProduct] = useState<ItemType | null>(null);
     const [rawImg, setRawImg] = useState<Blob[]>([]);
     const [preview, setPreview] = useState<string[]>([]);
-    const [submitBtnDisable, setSubmitBtnDisable] = useState(true);
+    const [submitBtnDisable, setSubmitBtnDisable] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [isResponseMsg, setIsResponseMsg] = useState<boolean>(false)
+    const [isResponseMsg, setIsResponseMsg] = useState<boolean>(false);
+    const [submitBtnSpinner, setSubmitBtnSpinner] = useState<boolean>(false);
 
     useEffect(() => {
         if (item){
@@ -29,7 +32,7 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                 (async () => {
                     const rawImgs = await Promise.all(
                         item.image.map(async img => {
-                            const res = await fetch(img.url);
+                            const res = await fetch(img);
                             return await res.blob();
                         })
                     )
@@ -38,9 +41,7 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
             }
         }
     }, [item]);
-    console.log(rawImg);
-
-
+    
     useEffect(() => {
         const imgUrl = rawImg.map(img => URL.createObjectURL(img));
         setPreview(imgUrl);
@@ -106,11 +107,13 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
 
     async function submitHandler (e:React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
+        setSubmitBtnSpinner(true);
+        setSubmitBtnDisable(true);
         
         if (!copiedProduct || !item) return;
-        const formData = new FormData();
         
         try {
+            const formData = new FormData();
             formData.append('data', JSON.stringify(copiedProduct));
     
             if (rawImg.length) {
@@ -120,17 +123,22 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
             const updatedProduct:ItemType = await fetch('/api/admin/products/items', {
                 method: 'PUT',
                 body: formData
-            }).then(res => res.json())
-            .catch(err => new Error(err));
+            })
+            .then(res => res.json())
+            .catch(err => toast.error('update failed'));
 
             if (typeof updatedProduct === 'object' && Object.keys(updatedProduct).length){
                 setProduct(updatedProduct);
                 setCopiedProduct(updatedProduct);
             }
 
+            setSubmitBtnSpinner(false);
+            setSubmitBtnDisable(false);
             return toast.success(`${updatedProduct.name} updated!`)
             
         } catch (error) {
+            setSubmitBtnDisable(false);
+            setSubmitBtnSpinner(false);
             throw new Error('failed to update item');
         }
     }
@@ -144,7 +152,7 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ id: product?.id })
+            body: JSON.stringify({ id: product?._id })
         })
 
         if (!res.ok) return toast.error(`failed to remove ${copiedProduct?.name.slice(0, 8)}`);
@@ -194,7 +202,7 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                 <div className={containerClassName}>
                     <label htmlFor="id" className={labelClassName}>Id</label>
                     <input type="text"
-                            value={item.id}
+                            value={item._id}
                             disabled
                             id="id"
                             className={inputClassName} />
@@ -219,7 +227,7 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                 </div>
                 <div className={containerClassName}>
                     <label htmlFor="details" className={labelClassName}>Details</label>
-                    <textarea defaultValue={item.details}
+                    <textarea defaultValue={item?.details ?? ''}
                             id="details"
                             name="details"
                             rows={3}
@@ -228,7 +236,7 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                 </div>
                 <div className={containerClassName}>
                     <label htmlFor="id" className={labelClassName}>Description</label>
-                    <textarea defaultValue={item.description ?? ''}
+                    <textarea defaultValue={item?.description ?? ''}
                             id="description"
                             name="description"
                             rows={7}
@@ -281,11 +289,11 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                 </div>
 
                 <div className={containerClassName}>
-                    <label htmlFor="isNew" className={labelClassName}>New Item</label>
+                    <label htmlFor="isNewItem" className={labelClassName}>New Item</label>
                     <select className={selectClassName}
-                            id="isNew"
-                            name="isNew"
-                            defaultValue={item.isNew + ''}
+                            id="isNewItem"
+                            name="isNewItem"
+                            defaultValue={item.isNewItem + ''}
                             onChange={inputHandler}>
                         <option disabled>Please Select</option>
                         <option value={'true'}>True</option>
@@ -314,10 +322,16 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                     </button>
                     <button className="w-[200px] h-[40px] bg-green-500 text-white
                                         disabled:bg-green-300 disabled:cursor-not-allowed"
-                            // disabled={submitBtnDisable}
+                            disabled={submitBtnDisable}
                             type="submit"
                             onClick={submitHandler}>
-                        Submit
+                        {
+                            submitBtnSpinner ? <FontAwesomeIcon icon={faSpinner}
+                                                                spinPulse
+                                                                className="text-sm text-white" />
+                                                :
+                                                'Submit'
+                        }
                     </button>
                 </div>
             </form>

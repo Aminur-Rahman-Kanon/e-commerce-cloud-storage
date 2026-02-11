@@ -5,12 +5,11 @@ import Header from "./component/layout/header/header";
 import { useEffect, useState } from "react";
 import Link from 'next/link';
 
-
-
 export default function Page() {
     
     const [catLength, setCatLength] = useState<number>(0);
     const [itemLength, setItemLength] = useState<number>(0);
+    const [orderLength, setOrderLength] = useState<number>(0);
     
     useAdminAuth();
     
@@ -36,15 +35,22 @@ export default function Page() {
         }
     }
 
+    async function getOrdersLength() {
+        const jsonOrders = await fetch('/api/admin/orders');
+        const order = await jsonOrders.json();
+        if (order?.orders?.length){
+            setOrderLength(order.orders.length);
+        }
+    }
+
     useEffect(() => {
         getCategoriesLength();
         getItemsLength();
+        getOrdersLength();
     }, [])
 
     return (
         <div className="w-full space-y-6 px-6">
-            <Header />
-
             {/* Page Title */}
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-semibold">Dashboard</h1>
@@ -67,7 +73,7 @@ export default function Page() {
                 <Link href={'/admin/orders'}
                       className="w-[300px] p-6 rounded flex flex-col justify-center items-center
                                 border border-gray-300"  >
-                    <h2 className="text-gray-700 font-bold"> Orders: 10</h2>
+                    <h2 className="text-gray-700 font-bold"> Orders: { orderLength }</h2>
                     <p className="text-gray-700 font-normal">Tap to manage Orders</p>
                 </Link>
             </section>
