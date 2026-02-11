@@ -3,6 +3,7 @@ import { serializeCategory, serializeItem } from "@/app/(shop)/utilities/utiliti
 import { Category } from "@/app/model/category";
 import { Item } from "@/app/model/items";
 import { connectDB } from '@/lib/mongodb';
+import { Types } from 'mongoose'
 
 const baseUrl =
   process.env.NEXT_PUBLIC_BASE_URL ??
@@ -16,13 +17,27 @@ export async function getCategories() {
 }
 
 
-export async function getSingleItem (id:string):Promise<ItemType | null> {
-    if (!id) null;
+export async function getSingleItem(id: string): Promise<ItemType | null> {
+    console.log("Fetching item:", id);
+
+    if (!id || !Types.ObjectId.isValid(id)) {
+        console.log("Invalid ID");
+        return null;
+    }
 
     try {
-        const item = await Item.findOne({ _id: id }).populate({ path: 'categoryId', select: 'name' }).lean();
+        const item = await Item.findById(id)
+            .populate({ path: 'categoryId', select: 'name' })
+            .lean();
+
+        console.log("DB result:", item);
+
+        if (!item) return null;
+
         return serializeItem(item);
     } catch (error) {
+        console.error("Fetch error:", error);
         return null;
     }
 }
+
