@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 export type UserType = {
     name: string,
@@ -10,8 +10,8 @@ export type UserType = {
 
 export default function useLoggedIn () {
     const [user, setUser] = useState<UserType | {}>({});
-    const params = useParams();
-    const searchParams = useSearchParams();
+
+    const pathName = usePathname();
 
     useEffect(() => {
         (async () => {
@@ -28,7 +28,7 @@ export default function useLoggedIn () {
                 setUser(usr)
             }
         })()
-    }, [params, searchParams]);
+    }, [pathName]);
 
 
     return user as UserType;
