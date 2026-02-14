@@ -44,7 +44,8 @@ type PaymentInfo = {
     currency: string,
     cardInfo: CardInfo,
     stripeSessionId: string,
-    stripePaymentIntentId: string
+    stripePaymentIntentId: string,
+    orderedTime: string
 }
 
 type CardInfo = {

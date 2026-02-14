@@ -56,6 +56,8 @@ export async function POST(req: Request) {
                 };
             }
 
+            const orderedTime = new Date().toISOString();
+
             const updateData = {
                 user: {
                     name: session.customer_details?.name,
@@ -69,7 +71,8 @@ export async function POST(req: Request) {
                     currency: session.currency,
                     cardInfo: cardInfo,
                     stripeSessionId: session.id,
-                    stripePaymentIntentId: paymentIntent.id
+                    stripePaymentIntentId: paymentIntent.id,
+                    orderedTime: orderedTime
                 },
                 shipping: {
                     customerName: session.customer_details?.name,
@@ -81,7 +84,7 @@ export async function POST(req: Request) {
             await order.updateOne(
                 { _id: session.metadata?.orderId! },
                 { $set: updateData }
-            )
+            ).catch(err => console.log(err))
     
         }
         return NextResponse.json(null, { status: 200 });

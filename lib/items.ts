@@ -11,7 +11,6 @@ export async function getCategories() {
   return categories.map(serializeCategory);
 }
 
-
 export async function getSingleItem(id: string): Promise<ItemType | null> {
     await connectDB();
 
@@ -32,4 +31,3 @@ export async function getSingleItem(id: string): Promise<ItemType | null> {
         return null;
     }
 }
-

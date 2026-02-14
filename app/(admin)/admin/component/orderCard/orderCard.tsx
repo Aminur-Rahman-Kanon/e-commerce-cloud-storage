@@ -73,6 +73,7 @@ export default function OrderCard({ product }: Props) {
         }
 
         toast.success('Order deleted!');
+        setDisplayWarningMsg(false);
 
         return setTimeout(() => {
             window.location.reload();

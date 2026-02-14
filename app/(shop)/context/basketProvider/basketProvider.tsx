@@ -2,6 +2,7 @@
 
 import { ItemType } from '@/app/(admin)/admin/type/items';
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 
 export type BasketItem = {
     item: ItemType,
@@ -50,6 +51,8 @@ export function BasketProvider({ children }: { children: React.ReactNode }) {
 
       return [...prev, { ...product, quantity: 1 }];
     });
+
+    return toast.success(`${product.item.name} added to basket`)
   };
 
   const removeItem = (id: string) => {

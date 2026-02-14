@@ -37,12 +37,19 @@ const OrderSchema = new Schema({
         currency: String,
         cardInfo: Object,
         stripeSessionId: String,
-        stripePaymentIntentId: String
+        stripePaymentIntentId: String,
+        orderedTime: String
     },
     shipping: {
         customerName: { type: String, trim: true },
         address: Object,
         method: Object,
+        estimatedShipping: String,
+    },
+    delivery: {
+        isDelivered: Boolean,
+        deliveredDate: String,
+        deliveredAddress: String
     }
 },
 {

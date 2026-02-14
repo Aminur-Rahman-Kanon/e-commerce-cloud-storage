@@ -18,6 +18,8 @@ export default function Page() {
         })()
     }, []);
 
+    console.log(orders)
+
     return orders.length ? <div className="w-full flex flex-col justify-center items-center gap-2 p-5">
         <h1 className="text-xl text-gray-500 font-semibold">Orders</h1>
         <div className="w-full flex flex-col items-start">
