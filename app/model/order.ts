@@ -3,7 +3,7 @@ import { models, model, Schema } from 'mongoose';
 const OrderSchema = new Schema({
     status: {
         type: String,
-        enum: ['PENDING', 'PROCESSING', 'DELIVERED', 'CANCELED'],
+        enum: ['PENDING', 'SHIPPING', 'DELIVERED', 'CANCELED'],
         default: 'PENDING'
     },
     items: [
@@ -18,7 +18,8 @@ const OrderSchema = new Schema({
             // size: String,
             prices: Number,
             image: String,
-            isSale: Boolean
+            isSale: Boolean,
+            quantity: Number
         }
     ],
     user: {
@@ -44,10 +45,11 @@ const OrderSchema = new Schema({
         customerName: { type: String, trim: true },
         address: Object,
         method: Object,
+        isShipping: { type: Boolean, default: false, required: true },
         estimatedShipping: String,
     },
     delivery: {
-        isDelivered: Boolean,
+        isDelivered: { type: Boolean, default: false, required: true },
         deliveredDate: String,
         deliveredAddress: String
     }

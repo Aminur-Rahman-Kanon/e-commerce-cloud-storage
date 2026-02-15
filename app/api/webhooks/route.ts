@@ -77,7 +77,11 @@ export async function POST(req: Request) {
                 shipping: {
                     customerName: session.customer_details?.name,
                     address: session.customer_details?.address,
-                    method: shippingMethod
+                    method: shippingMethod,
+                    isShipping: false
+                },
+                delivery: {
+                    isDelivered: false,
                 }
             }
     

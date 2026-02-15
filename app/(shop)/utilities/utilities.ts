@@ -36,3 +36,10 @@ export function calculateTotal(basket:BasketItem[]){
           return acc + price! * itm.quantity
   }, 0)
 }
+
+export function formateDatTime (value:string): string | null {
+    if (!value) return null;
+
+    const newDate = new Date(value);
+    return `${newDate.toDateString()} ${newDate.toLocaleTimeString()}`;
+}

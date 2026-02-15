@@ -1,7 +1,6 @@
 import { BasketItem } from "@/app/(shop)/context/basketProvider/basketProvider";
 import order from "@/app/model/order";
 import { connectDB } from "@/lib/mongodb";
-import { calculateTotal } from "@/app/(shop)/utilities/utilities";
 
 export default async function createTempOrder(basket:BasketItem[]) {
     if (!basket.length) return;
@@ -16,6 +15,7 @@ export default async function createTempOrder(basket:BasketItem[]) {
             categoryId: itm.item.categoryId.toString(),
             prices: itm?.item?.prices?.discounted ?? itm?.item?.prices?.base,
             image: itm.item.image[0],
+            quantity: itm.quantity
             // size: itm.item.size?.[0] ?? ''
         }))
 

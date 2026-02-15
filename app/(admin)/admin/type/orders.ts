@@ -5,6 +5,7 @@ export type OrdersType = {
     user?: User,
     paymentInfo?: PaymentInfo,
     shipping?: Shipping,
+    delivery: Delivery
     createdAt: string,
     updatedAt: string
 }
@@ -19,7 +20,8 @@ type Items = {
     categoryName: string,
     prices: number,
     image: string,
-    isSale: boolean
+    isSale: boolean,
+    quantity: number
 }
 
 type User = {
@@ -58,11 +60,19 @@ type CardInfo = {
 type Shipping = {
     customerName: string,
     address: Address,
-    method: Method
+    method: Method,
+    isShipping: boolean,
+    estimatedShipping: string
 }
 
 type Method = {
     code: string,
     label: string,
     amount: number
+}
+
+type Delivery = {
+    isDelivered: boolean,
+    deliveredDate: string,
+    deliveredAddress: string
 }
