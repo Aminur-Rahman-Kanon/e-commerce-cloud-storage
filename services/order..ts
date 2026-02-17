@@ -5,8 +5,6 @@ import { connectDB } from "@/lib/mongodb";
 export default async function createTempOrder(basket:BasketItem[]) {
     if (!basket.length) return;
 
-    basket.forEach(itm => console.log(itm.item.prices))
-
     try {
         await connectDB();
         

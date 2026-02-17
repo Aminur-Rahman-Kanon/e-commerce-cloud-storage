@@ -4,7 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import { Shield } from 'lucide-react';
-import { BasketItem, useBasket } from '@/app/(shop)/context/basketProvider/basketProvider';
+import { BasketItem } from '@/app/(shop)/context/basketProvider/basketProvider';
+import { useBasketStore } from '@/app/store/basket/basket';
 import { createCheckout } from '@/app/actions/checkout';
 
 type UserInfo = {
@@ -21,8 +22,7 @@ export type CheckoutObj = {
 }
 
 export default function Page() {
-
-    const { items } = useBasket();
+    const { items } = useBasketStore();
 
     const [userInfo, setUserInfo] = useState<UserInfo>({
         firstName: '',
