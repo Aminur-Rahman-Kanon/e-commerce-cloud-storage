@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { ItemType } from '@/app/(admin)/admin/type/items';
 import { sanitizeStorageKey } from '@/app/api/admin/utilities/utilities';
 import { v4 as uuid } from 'uuid';
