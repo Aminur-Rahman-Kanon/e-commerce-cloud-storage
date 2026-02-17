@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 export default function ProductCard ({ product }: { product: any }) {
     
@@ -20,11 +20,11 @@ export default function ProductCard ({ product }: { product: any }) {
                         md:max-w-[280px]
                         lg:max-w-[330px]'>
 
-            <div className='relative w-[calc(100%-50px)] h-[330px] aspect-[3/4] z-10 rounded overflow-hidden'>
+            <div className='relative w-[calc(100%-50px)] h-[330px] aspect-[3/4] z-20'>
                 <Image src={product.image[0]}
                         alt={product.name}
                         fill
-                        className='object-cover' />
+                        className='object-cover rounded' />
             </div>
 
             <div className='relative w-full h-full min-h-[180px] flex flex-col justify-center items-center
@@ -32,7 +32,7 @@ export default function ProductCard ({ product }: { product: any }) {
                             md:min-h-[150px]
                             lg:min-h-[180px]'>
 
-                <div className='absolute bottom-0 left-0 w-full h-[135%] border border-gray-300 rounded-md pointer-events-none
+                <div className='absolute bottom-0 left-0 z-10 w-full h-[135%] border border-gray-300 rounded-md pointer-events-none
                                 group-hover:border-[#8aa693] transition-colors duration-500 ease-out'>
 
                 </div>
@@ -43,12 +43,12 @@ export default function ProductCard ({ product }: { product: any }) {
                     </h2>
                     <div className='flex justify-center items-center my-2'>
                         {
-                            Number(product?.prices?.discounted ?? 0) > 0 ? <div className='flex justify-center items-center'>
-                                <h4 className='text-sm font-semibold mx-3'>&#2547;{product?.prices?.discounted}</h4>
-                                <s className='text-sm font-normal opacity-25 mx-3'>&#2547;{product?.prices?.base}</s>
+                            product?.prices?.discounted ?? 0 > 0 ? <div className='flex justify-center items-center'>
+                                <h4 className='text-sm font-semibold mx-3'>&#x24;{product?.prices?.discounted}</h4>
+                                <s className='text-sm font-normal opacity-25 mx-3'>&#x24;{product?.prices?.base}</s>
                             </div>
                             :
-                            <h4 className='text-sm font-semibold'>&#2547;{product?.prices?.discounted}</h4>
+                            <h4 className='text-sm font-semibold'>&#x24;{product?.prices?.discounted}</h4>
                             
                         }
                     </div>

@@ -2,17 +2,23 @@
 
 import Link from "next/link";
 import { useRouter } from 'next/navigation';
-import { Search, ShoppingBasket, UserRound } from 'lucide-react';
+import { Search, ShoppingBasket, UserRound, Menu } from 'lucide-react';
 import Image from "next/image";
-import { useBasket } from "@/app/(shop)/context/basketProvider/basketProvider";
+import { useBasketStore } from '@/app/store/basket/basket';
+import { useMobileMenu } from '@/app/store/mobileMenu/useMobileMenu';
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 
 export default function Header () {
-    const { count } = useBasket();
     const router = useRouter();
+
+    const { openMobileMenu } = useMobileMenu();
+
+    const count = useBasketStore(state =>
+        state.items.reduce((sum, i) => sum + i.quantity, 0)
+    );
 
     const [userCredential, setUserCredential] = useState<string>('');
     const [userLoginBtnSpinner, setUserLoginBtnSpinner] = useState<boolean>(false);
@@ -60,8 +66,16 @@ export default function Header () {
     }
 
     return (
-        <div className="w-full p-2 grid grid-cols-[repeat(3,250px)] justify-between items-center">
-            <nav className="w-full flex justify-left items-center">
+        <div className="w-full p-2 grid grid-cols-[repeat(3,100px)] justify-between items-center overflow-hidden 
+                        md:grid-cols-[repeat(3,150px)] 
+                        lg:grid-cols-[repeat(3,250px)]">
+            <button className="w-[30px] h-[30px] text-sm text-gray-600 flex justify-center items-center
+                                md:hidden"
+                    onClick={openMobileMenu}>
+                <Menu />
+            </button>
+            <nav className="w-full hidden flex justify-left items-center
+                            md:flex">
                 <Link href={'/'} className="w-[80px] mx-3 shrink-0 text-md font-normal text-gray-600 text-center
                                             hover:text-black transition-colors duration-300 ease-out">
                     Home
@@ -76,11 +90,11 @@ export default function Header () {
                 </Link>
             </nav>
 
-            <div className="relative w-full flex justify-center items-center">
+            <div className="relative w-full h-[100px] aspect=[3/2] flex justify-center items-center">
                 <Image src={'/images/logo/logo_1.png'}
                         alt="antorbon"
-                        width={125}
-                        height={125}
+                        width={100}
+                        height={100}
                         style={{ objectFit: 'cover' }} />
             </div>
 
@@ -120,6 +134,7 @@ export default function Header () {
                     </span>
                 </Link>
             </div>
+
         </div>
     )
 }

@@ -12,12 +12,10 @@ export default async function Products() {
 
     if (!categories.length) return;
 
-    const category = categories[0];
-
-    const displayCategories =  <div key={category.id}
-                                className="w-full h-full flex flex-col justify-center items-center spacey-4">
+    const displayCategories = categories.map(cat => <div key={cat._id}
+                                className="w-full h-full flex flex-col justify-center items-center spacey-4 my-10">
         <h2 className="text-2xl font-light tracking-wider uppercase text-gray-500">
-            {category.name}
+            {cat.name}
         </h2>
 
         <div className="w-full my-[50px] grid place-items-center gap-y-20
@@ -26,10 +24,11 @@ export default async function Products() {
                         md:grid-cols-2
                         lg:grid-cols-3">
             {
-                category.items.map((itm:ItemType, idx:number) => <ProductCard key={idx} product={itm}/>)
+                cat.items.map((itm:ItemType, idx:number) => <ProductCard key={idx} product={itm}/>)
             }
         </div>
     </div>
+    )
 
     return (
         <div className="w-full max-w-[1400px] mx-auto space-y-10 p-3">

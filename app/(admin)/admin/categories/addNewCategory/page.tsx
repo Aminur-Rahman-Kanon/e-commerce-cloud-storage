@@ -108,6 +108,9 @@ export default function Page () {
                 body: formData
             })
 
+            setSpinner(false);
+            setBtnDisable(false);
+
             if (!res.ok) throw new Error("upload failed");
             toast.success(`${data.name} created!`);
             

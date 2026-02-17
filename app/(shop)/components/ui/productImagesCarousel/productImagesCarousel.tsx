@@ -14,7 +14,10 @@ export default function ProductImagesCarousel ({ images }: Props){
     if (!images.length) return;
 
     const displayImages = images.map((img, idx) => <div key={idx} className='embla__slide'>
-        <div className='relative w-full h-[700px]'>
+        <div className='relative w-full h-[450px]
+                        md:h-[600px]
+                        lg:h-[700px]
+                        ex'>
             <Image src={img}
                     alt='antorbon'
                     fill

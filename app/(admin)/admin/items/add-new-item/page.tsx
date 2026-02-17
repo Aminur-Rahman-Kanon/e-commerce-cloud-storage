@@ -176,6 +176,9 @@ export default function page () {
                 method: 'POST',
                 body: formData
             })
+
+            setSpinner(false);
+            setDisableSubmitBtn(false);
     
             if (!res.ok) return toast.error(`${item.name.slice(0, 15)} failed to create`);
     

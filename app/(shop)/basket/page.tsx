@@ -1,7 +1,7 @@
 'use client';
 
 import Image from "next/image";
-import { useBasket } from "../context/basketProvider/basketProvider";
+import { useBasketStore } from '@/app/store/basket/basket';
 import { ItemType } from "@/app/(admin)/admin/type/items";
 import { calculateTotal } from "../utilities/utilities";
 import { createCheckout } from "@/app/actions/checkout";
@@ -10,7 +10,7 @@ import { SupportedCurrency } from "@/app/(admin)/admin/utilities/utilities";
 import { ShoppingBag } from 'lucide-react';
 
 export default function Page () {
-    const { addItem, removeItem, items } = useBasket();
+    const { addItem, removeItem, items } = useBasketStore()
 
     const [curr, setCurr] = useState<SupportedCurrency>('eur');
 

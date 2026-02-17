@@ -1,47 +1,114 @@
 'use client'
 
-import { useState } from 'react'
+import { useRouter } from 'next/navigation';
 import Link from 'next/link'
-import { Menu, X } from 'lucide-react'
+import { X, ChevronLeft } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookSquare, faInstagramSquare, faTiktok, faYoutubeSquare } from '@fortawesome/free-brands-svg-icons';
+import { useMobileMenu } from '@/app/store/mobileMenu/useMobileMenu';
+import Image from 'next/image';
 
 export default function MobileMenu() {
-  const [open, setOpen] = useState(false)
+  const router = useRouter();
+  const {
+    isMobileMenuOpen,
+    isCategoryMenuOpen,
+    closeMobileMenu,
+    openCategoryMenu,
+    closeCategoryMenu
+  } = useMobileMenu();
+
+  const toggleMenuView = isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full';
+  const toggleCategoryView = isCategoryMenuOpen ? 'translate-x-0' : '-translate-x-full';
+
+  function routeAndMobileMenuHandler (path:string):void {
+    if (!path) return;
+
+    closeMobileMenu();
+    router.push(path);
+  }
+  
 
   return (
-    <header className="w-full bg-white border-b border-gray-200">
-      <div className="max-w-7xl mx-auto flex items-center justify-between p-4">
-        {/* Logo Placeholder */}
-        <div className="text-xl font-semibold tracking-wide text-gray-700">
-          Antorbon
+    <header className={`fixed top-0 left-0 z-40 transition transform duration-400 w-full max-w-[500px] h-screen bg-white border border-gray-200 
+                        ${toggleMenuView}`}>
+        <div className='w-full h-full flex flex-col justify-between items-start px-3 py-5 '>
+            <div className="w-full h-full flex flex-col items-start justify-start gap-y-10">
+                <div className='w-full flex justify-between items-center'>
+                    <div className="relative w-[100px] aspect-[3/2] flex jistify-center items-center">
+                        <Image src={'/images/logo/logo_1.png'}
+                                alt='logo'
+                                fill
+                                sizes='100%'
+                                className='object-cover' />
+                    </div>
+
+                    <button className='w-[50px] h-[50px] flex justify-center items-center text-gray-600'
+                            onClick={closeMobileMenu}>
+                        <X size={20} />
+                    </button>
+                </div>
+
+                <div className='relative w-full h-[fit-content] min-h-[250px] flex flex-col justify-start items-start'>
+                    <nav className="flex flex-col justify-start items-start gap-y-8 text-gray-600 mt-10">
+                        <Link href="/"
+                            className="hover:text-gray-900 text-lg"
+                            onClick={() => routeAndMobileMenuHandler('/')}>
+                            Home
+                        </Link>
+                        <div className="hover:text-gray-900  text-lg"
+                             onClick={openCategoryMenu}>
+                            Category
+                        </div>
+                        <Link href="/about-us"
+                              className="hover:text-gray-900 text-lg"
+                              onClick={() => routeAndMobileMenuHandler('/about-us')}>
+                            About Us
+                        </Link>
+                    </nav>
+                    <div className={`absolute top-0 left-0 w-full h-full transition transform duration-400 ${toggleCategoryView}
+                                    flex flex-col justify-start items-start bg-white z-30 gap-y-5`}>
+                        <button className='flex justify-center items-center text-sm text-gray-600'
+                                onClick={closeCategoryMenu}>
+                            <ChevronLeft size={20} />
+                        </button>
+                        <div className='flex flex-col justify-start items-start gap-y-5'>
+                            <Link href='#'
+                                className='text-lg text-gray-600' >
+                                Test 1
+                            </Link>
+                            <Link href='#'
+                                className='text-lg text-gray-600' >
+                                Test 2
+                            </Link>
+                            <Link href='#'
+                                className='text-lg text-gray-600' >
+                                Test 3
+                            </Link>
+                            <Link href='#'
+                                className='text-lg text-gray-600' >
+                                Test 4
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className='w-full flex justify-between items-start mb-10'>
+                <Link href={'#'} className='text-2xl text-gray-600'>
+                    <FontAwesomeIcon icon={faFacebookSquare} />
+                </Link>
+                <Link href={'#'} className='text-2xl text-gray-600'>
+                    <FontAwesomeIcon icon={faInstagramSquare} />
+                </Link>
+                <Link href={'#'} className='text-2xl text-gray-600'>
+                    <FontAwesomeIcon icon={faTiktok} />
+                </Link>
+                <Link href={'#'} className='text-2xl text-gray-600'>
+                    <FontAwesomeIcon icon={faYoutubeSquare} />
+                </Link>
+            </div>
         </div>
-
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex gap-8 text-gray-600">
-          <Link href="/" className="hover:text-gray-900">Home</Link>
-          <Link href="/category" className="hover:text-gray-900">Category</Link>
-          <Link href="/about" className="hover:text-gray-900">About Us</Link>
-        </nav>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-gray-700"
-          onClick={() => setOpen(prev => !prev)}
-          aria-label="Toggle Menu"
-        >
-          {open ? <X size={28} /> : <Menu size={28} />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden bg-white border-t border-gray-200">
-          <nav className="flex flex-col items-center gap-6 py-6 text-gray-600">
-            <Link href="/" onClick={() => setOpen(false)} className="hover:text-gray-900">Home</Link>
-            <Link href="/category" onClick={() => setOpen(false)} className="hover:text-gray-900">Category</Link>
-            <Link href="/about" onClick={() => setOpen(false)} className="hover:text-gray-900">About Us</Link>
-          </nav>
-        </div>
-      )}
     </header>
   )
 }
