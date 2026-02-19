@@ -8,7 +8,7 @@ export type ItemType = {
     categoryName: string,
     image: string[],
     size: string[] | null,
-    prices?: PriceType | null,
+    prices?: PriceType,
     isActive: boolean,
     isSpecial: boolean,
     isNewItem: boolean,
@@ -16,10 +16,8 @@ export type ItemType = {
 }
 
 export type PriceType = {
-    id?: string,
     base: number,
-    discounted: number | null,
-    itemId?: string,
+    discounted?: number | undefined,
 }
 
 export type CategoriesType = {

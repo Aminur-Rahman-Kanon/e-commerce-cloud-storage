@@ -27,11 +27,11 @@ export default function Header() {
     return (
         <div className="w-full h-[80px] flex justify-between items-center bg-white mb-10 p-5">
             <span className="font-medium">Welcome back 👋</span>
-            <div className="flex flex-col items-center gap-1">
+            <div className="flex flex-col items-end gap-1">
                 <div className="relative w-10 h-10 rounded-full flex justify-center align-items">
-                <Image src={'/images/icons/admin.png'}
-                        alt="admin"
-                        fill />
+                    <Image src={'/images/icons/admin.png'}
+                            alt="admin"
+                            fill />
                 </div>
                 <div className="flex justify-center align-items space-x-2">
                 <span className="flex justify-center items-center text-sm font-normal">{user?.role?.toUpperCase()}</span>

@@ -14,15 +14,14 @@ export default async function Products() {
 
     const displayCategories = categories.map(cat => <div key={cat._id}
                                 className="w-full h-full flex flex-col justify-center items-center spacey-4 my-10">
-        <h2 className="text-2xl font-light tracking-wider uppercase text-gray-500">
+        <h2 className="text-md font-light tracking-wider uppercase text-gray-500
+                        md:xl">
             {cat.name}
         </h2>
 
-        <div className="w-full my-[50px] grid place-items-center gap-y-20
-                        grid-cols-1
-                        sm:grid-cols-2
-                        md:grid-cols-2
-                        lg:grid-cols-3">
+        <div className="w-full my-[50px] grid place-items-center gap-y-20 gap-x-3
+                        grid-cols-2
+                        md:grid-cols-3">
             {
                 cat.items.map((itm:ItemType, idx:number) => <ProductCard key={idx} product={itm}/>)
             }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ItemType } from "../../type/items"
+import { ItemType, PriceType } from "../../type/items"
 import ImageUpload from "../imageUpload/imageUpload";
 import { toBoolean } from '@/app/(admin)/admin/utilities/utilities';
 import { toast } from "react-toastify";
@@ -8,7 +8,7 @@ import Modal from "@/app/(shop)/components/layout/modal/modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-const containerClassName = 'w-full my-3 flex flex-col justify-center items-left space-y-3';
+const containerClassName = 'w-full my-3 flex flex-col justify-center items-start space-y-3';
 const labelClassName = 'w-180px capitalize font-medium';
 const inputClassName = 'w-full h-[30px] border border-gray-500 mt-2 p-2 disabled:bg-gray-100 disabled:opacity-50';
 const textareaClassName = 'w-full border border-gray-500 mt-2 p-2'
@@ -72,11 +72,25 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
             }: prev)
             return;
         }
+        else if (name === 'base' || name === 'discounted'){
+            const price:PriceType = {
+                base: copiedProduct?.prices?.base ?? 0,
+                discounted: copiedProduct?.prices?.discounted
+            };
+
+            price[name] = Number(value);
+
+            setCopiedProduct(prev => prev ? {
+                ...prev,
+                prices: price
+            }: prev)
+        }
         else {
             setCopiedProduct(prev => prev ? {
                 ...prev,
                 [name]: value
             }: prev)
+            return;
         }
     }
 
@@ -235,7 +249,7 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                             onChange={inputHandler} />
                 </div>
                 <div className={containerClassName}>
-                    <label htmlFor="id" className={labelClassName}>Description</label>
+                    <label htmlFor="description" className={labelClassName}>Description</label>
                     <textarea defaultValue={item?.description ?? ''}
                             id="description"
                             name="description"
@@ -244,8 +258,37 @@ export default function Item ({ item, index }: {item: ItemType, index: number}) 
                             onChange={inputHandler} />
                 </div>
                 <div className={containerClassName}>
+                    <label className={labelClassName}>Price</label>
+                    <div className="w-full flex justify-start items-start gap-x-5">
+                        <div className="flex justify-center items-center gap-x-5">
+                            <label htmlFor="base">
+                                Base:
+                            </label>
+                            &#x24;<input type="number"
+                                    id="base"
+                                    name="base"
+                                    placeholder="Base price"
+                                    className="w-[150px] h-[30px] pl-2 text-sm border border-gray-600"
+                                    defaultValue={item.prices?.base ?? 0}
+                                    onChange={inputHandler} />
+                        </div>
+                        <div className="flex justify-center items-center gap-x-5">
+                            <label htmlFor="base">
+                                Discounted:
+                            </label>
+                            &#x24;<input type="number"
+                                    id="discounted"
+                                    name="discounted"
+                                    placeholder="Discounted price"
+                                    className="w-[150px] h-[30px] pl-2 text-sm border border-gray-600"
+                                    defaultValue={item.prices?.discounted ?? 0}
+                                    onChange={inputHandler} />
+                        </div>
+                    </div>
+                </div>
+                <div className={containerClassName}>
                     <h3>Images</h3>
-                    <div className="grid grid-cols-[repeat(auto-fill,minmax(50px,120px))] auto-rows-[minmax(50px,120px)] gap-2">
+                    <div className="w-full grid grid-cols-[repeat(auto-fill,minmax(50px,120px))] auto-rows-[minmax(50px,120px)] gap-2">
                         {
                             preview?.length ? preview.map((img, idx) =>
                                 <ImageUpload key={idx}
