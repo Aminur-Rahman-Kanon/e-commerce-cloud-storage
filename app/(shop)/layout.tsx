@@ -1,6 +1,7 @@
 import React from "react";
 import UiShell from "./ui-shell";
 import Footer from "./components/layout/footer/footer";
+import Header from "./components/layout/header/header";
 
 export default function ShopLayout({
     children
@@ -9,6 +10,7 @@ export default function ShopLayout({
 }) {
     return (
         <>
+            <Header />
             <UiShell>
                 {children}
             </UiShell>

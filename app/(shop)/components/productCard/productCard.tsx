@@ -25,31 +25,32 @@ export default function ProductCard ({ product }: { product: ItemType }) {
     
     return (
         <Link href={`/product/${product._id}`}
-              className='w-full h-full group flex flex-col justify-cetner items-center
-                        max-w-[330px]
-                        sm:max-w-[280px]
-                        md:max-w-[280px]
-                        lg:max-w-[330px]'>
+              className='w-full w-[170px] h-full group flex flex-col justify-cetner items-center
+                        sm:w-[220px]
+                        md:w-[250px]
+                        lg:w-[280px]'>
 
-            <div className='relative w-[calc(100%-20px)] h-[200px] aspect-[3/4] z-20
-                            md:h-[235px]
-                            lg:h-[280px]'>
+            <div className='relative w-[150px] h-[150px] aspect-[3/4] z-20
+                            sm:w-[200px] sm:h-[200px]
+                            md:w-[230px] md:h-[230px]
+                            lg:w-[260px] md:h-[260px]'>
                 <Image src={product.image[0]}
                         alt={product.name}
                         fill
                         className='object-cover rounded' />
             </div>
 
-            <div className='relative w-full h-full flex flex-col justify-center items-center'>
+            <div className='relative w-full h-full flex flex-col justify-end items-center'>
 
-                <div className='absolute bottom-0 left-0 z-10 w-full h-[calc(100%+35px)] border border-gray-300 rounded pointer-events-none
+                <div className='absolute bottom-0 left-0 z-10 w-full h-[calc(100%+35px)] border border-gray-300 rounded-md pointer-events-none
                                 group-hover:border-[#8aa693] transition-colors duration-500 ease-out'>
 
                 </div>
 
                 <div className='w-full flex flex-col justify-end items-center overflow-hidden'>
                     <h2 className='text-xs font-normal uppercase text-gray-500 my-2 text-center w-[250px] truncate
-                                    md:sm'>
+                                    md:text-sm
+                                    lg:text-md'>
                         {product.name}
                     </h2>
                     <div className='flex justify-center items-center my-2'>
@@ -66,7 +67,7 @@ export default function ProductCard ({ product }: { product: ItemType }) {
                             
                         }
                     </div>
-                    <button className='w-full h-[40px] bg-gray-700 text-white 
+                    <button className='w-full h-[40px] bg-gray-600 text-white rounded-b-sm
                                         cursor-pointer hover:bg-gray-800 mt-2 
                                         text-xs
                                         md:text-sm'
