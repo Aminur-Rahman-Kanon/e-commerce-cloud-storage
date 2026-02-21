@@ -57,8 +57,6 @@ export default function OrderCard({ product }: Props) {
         }
     }, [product]);
 
-    console.log(isShipping)
-
     function shippingInputHandler (e:React.ChangeEvent<HTMLSelectElement>) {
         e.preventDefault();
 
@@ -347,7 +345,7 @@ export default function OrderCard({ product }: Props) {
                         <div className="flex flex-col justify-start items-start gap-y-3">
                             <p className="text-sm text-gray-600 capitalize"><strong>Delivery:</strong> {item.shipping?.method?.label  ?? ''}</p>
                             <p className="text-sm text-gray-600 capitalize"><strong>Customer Name:</strong> {item.shipping?.customerName ?? ''}</p>
-                            <p className="text-sm text-gray-600 capitalize"><strong>Amount:</strong> {item.shipping?.method?.amount ?? ''}</p>
+                            <p className="text-sm text-gray-600 capitalize"><strong>Amount:</strong> {item.shipping?.method?.amount ? item.shipping?.method?.amount / 100 : ''}</p>
                         </div>
                     </div>
                 </div>
@@ -542,12 +540,12 @@ export default function OrderCard({ product }: Props) {
                         </form>
                     </div>
 
-                    <form className="flex flex-col justify-center items-start gap-y-5">
+                    <form className="w-[300px] flex flex-col justify-center items-start gap-y-5">
                         <h4 className="text-gray-600 text-md font-semibold">Remove Order:</h4>
                         <label htmlFor="delivery" className="text-sm text-gray-600">
                             Remove this Order ?
                         </label>
-                        <button className="w-[200px] h-[40px] bg-red-600 text-white"
+                        <button className="w-full h-[40px] bg-red-600 text-white"
                                 disabled={removeBtnDisable}
                                 onClick={() => setDisplayWarningMsg(true)}>
                             Remove This Order

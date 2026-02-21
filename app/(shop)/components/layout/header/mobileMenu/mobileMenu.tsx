@@ -7,8 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare, faInstagramSquare, faTiktok, faYoutubeSquare } from '@fortawesome/free-brands-svg-icons';
 import { useMobileMenu } from '@/app/store/mobileMenu/useMobileMenu';
 import Image from 'next/image';
+import { CategoriesType } from '@/app/(admin)/admin/type/categories';
 
-export default function MobileMenu() {
+type Props = {
+    categories: CategoriesType[]
+}
+
+export default function MobileMenu({ categories }: Props) {
   const router = useRouter();
   const {
     isMobileMenuOpen,
@@ -73,22 +78,15 @@ export default function MobileMenu() {
                             <ChevronLeft size={20} />
                         </button>
                         <div className='flex flex-col justify-start items-start gap-y-5'>
-                            <Link href='#'
-                                className='text-lg text-gray-600' >
-                                Test 1
-                            </Link>
-                            <Link href='#'
-                                className='text-lg text-gray-600' >
-                                Test 2
-                            </Link>
-                            <Link href='#'
-                                className='text-lg text-gray-600' >
-                                Test 3
-                            </Link>
-                            <Link href='#'
-                                className='text-lg text-gray-600' >
-                                Test 4
-                            </Link>
+                            {
+                                categories?.length ? categories.map(cat => <Link key={cat._id}
+                                                                                 href={`/categories/${cat.name}`}
+                                                                                 className='text-lg text-gray-600 capitalize'>
+                                                                            {cat.name}
+                                                                            </Link>)
+                                :
+                                'No Items'
+                            }
                         </div>
                     </div>
                 </div>

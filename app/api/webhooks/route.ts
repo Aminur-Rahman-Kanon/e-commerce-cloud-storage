@@ -4,7 +4,7 @@ import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import order from "@/app/model/order";
 import { NextResponse } from "next/server";
-
+import nodemailer from 'nodemailer';
 
 export async function POST(req: Request) {
     const signature = req.headers.get('stripe-signature')!;
@@ -89,7 +89,59 @@ export async function POST(req: Request) {
                 { _id: session.metadata?.orderId! },
                 { $set: updateData }
             ).catch(err => console.log(err))
-    
+
+            const transporter = nodemailer.createTransport({
+                host: process.env.SMTP_HOST,
+                port: 587,
+                secure: false,
+                auth: {
+                    user: process.env.SMTP_USER,
+                    pass: process.env.SMTP_PASS,
+                },
+            });
+
+            await transporter.sendMail({
+                from: process.env.SMTP_USER,
+                to: session.customer_details?.email!,
+                subject: "Order Confirmed!",
+                html: `<div class="width:100%;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;gap:15px;">
+                    <h1 class="font-size:1.5rem;font-weight:bold;">
+                        Thank you for your order, ${session.customer_details?.name?.toUpperCase()}
+                    </h1>
+                    <div class="width:100%;gap:15px;">
+                        <p class="font-size:12px;">
+                            Address: ${session.customer_details?.address?.line1 ?? 'no information'}
+                        </p>
+                        <p class="font-size:12px;">
+                            City: ${session.customer_details?.address?.city ?? 'no information'}
+                        </p>
+                        <p class="font-size:12px;">
+                            State: ${session.customer_details?.address?.state ?? 'no information'}
+                        </p>
+                        <p class="font-size:12px;">
+                            Postal code: ${session.customer_details?.address?.postal_code ?? 'no information'}
+                        </p>
+                        <p class="font-size:12px;">
+                            Country: ${session.customer_details?.address?.country ?? 'no information'}
+                        </p>
+                        <p class="font-size:12px;">
+                            Email: ${session.customer_details?.email ?? 'no information'}
+                        </p>
+                        <p class="font-size:12px;">
+                            Phone number: ${session.customer_details?.phone ?? 'no information'}
+                        </p>
+                        <p class="font-size:12px;">
+                            Payment staus: Paid
+                        </p>
+                        <p class="font-size:12px;">
+                            Shipping cost: ${session.shipping_cost?.amount_total ?? 0}
+                        </p>
+                        <p class="font-size:12px;">
+                            Item total: ${session.amount_total ?? 0}
+                        </p>
+                    </div>
+                </div>`,
+            });
         }
         return NextResponse.json(null, { status: 200 });
     } catch (error) {

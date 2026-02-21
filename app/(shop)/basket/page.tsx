@@ -128,15 +128,16 @@ export default function Page () {
                                 <p className="text-xs font-normal">&#2547;{ total }</p>
                             </div>
                             <div className="w-full flex justify-between items-center mt-5">
-                                <h4 className="text-sm font-semibold text-gray-700">Total</h4>
-                                <select className="bg-white"
+                                <h4 className="text-sm font-semibold text-gray-700">Currency</h4>
+                                <select className="bg-white w-[200px] h-[30px] border boder-gray-700
+                                                    text-gray-600"
                                         defaultValue={'eur'}
                                         onChange={currInputHandler}>
                                     <option disabled>Please Select</option>
-                                    <option value={'eur'}>&#8364;Euro</option>
-                                    <option value={'gbp'}>&#163;Pound Sterling</option>
-                                    <option value={'usd'}>&#x24;US Dollar</option>
-                                    <option value={'cad'}>&#x24;Canadian Dollar</option>
+                                    <option value={'eur'}>&#8364; Euro</option>
+                                    <option value={'gbp'}>&#163; Pound Sterling</option>
+                                    <option value={'usd'}>&#x24; US Dollar</option>
+                                    <option value={'cad'}>&#x24; Canadian Dollar</option>
                                 </select>
                             </div>
                         </div>

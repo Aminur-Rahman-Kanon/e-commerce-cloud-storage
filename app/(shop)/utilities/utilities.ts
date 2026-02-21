@@ -43,3 +43,14 @@ export function formateDatTime (value:string): string | null {
     const newDate = new Date(value);
     return `${newDate.toDateString()} ${newDate.toLocaleTimeString()}`;
 }
+
+export function getCurrencySymbol (currencyCode:string, locale='en') {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency: currencyCode,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
+  })
+  .format(0)
+  .replace(/[0-9\s.,]/g, '');
+}

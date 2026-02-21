@@ -1,12 +1,9 @@
 import { connectDB } from "./mongodb";
 import order from "@/app/model/order";
 import { OrdersType } from "@/app/(admin)/admin/type/orders";
-import { notFound } from "next/navigation";
 
 export async function getUserOrders (id:string): Promise<OrdersType | null> {
     if (!id) return null;
-
-    console.log(id);
 
     try {
         await connectDB();

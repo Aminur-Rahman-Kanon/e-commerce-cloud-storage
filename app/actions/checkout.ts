@@ -61,7 +61,7 @@ export async function createCheckout(basket: BasketItem[], curr: SupportedCurren
             allowed_countries: [...allowedCountries[curr]]
         },
         shipping_options: shippingOptions,
-        success_url: `${origin}/success`,
+        success_url: `${origin}/success/${order._id}`,
         cancel_url: `${origin}/cancel`,
         metadata: {
             orderId: order._id.toString(),
