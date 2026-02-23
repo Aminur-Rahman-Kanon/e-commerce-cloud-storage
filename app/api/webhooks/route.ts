@@ -100,7 +100,7 @@ export async function POST(req: Request) {
                 },
             });
 
-            await transporter.sendMail({
+            const info = await transporter.sendMail({
                 from: process.env.SMTP_USER,
                 to: session.customer_details?.email!,
                 subject: "Order Confirmed!",
@@ -142,6 +142,8 @@ export async function POST(req: Request) {
                     </div>
                 </div>`,
             });
+
+            console.log(info);
         }
         return NextResponse.json(null, { status: 200 });
     } catch (error) {
