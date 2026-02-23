@@ -121,7 +121,7 @@ export default function Category ({ category }: Props) {
                                         md:grid md:grid-cols-[repeat(3,1fr)]
                                         xl:w-[calc(100%-350px)]'>
                             {
-                                items.map(itm => <Link  href={`/product${itm._id}`}
+                                items.map(itm => <Link  href={`/product/${itm._id}`}
                                                         key={itm._id}
                                                         className='w-full h-full flex flex-col'>
                                     <div className='relative w-full aspect-[3/4] overflow-hidden'>
