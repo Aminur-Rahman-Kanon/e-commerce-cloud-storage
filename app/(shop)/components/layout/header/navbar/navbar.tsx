@@ -23,7 +23,7 @@ export default function Navabar ({ categories }: Props) {
                                 flex-col justify-start items-start bg-white group-hover:flex
                                 border border-gray-300">
                     {
-                        categories?.length ? categories.map(cat => <Link key={cat?._id} href={`/categories/${cat.name.toLowerCase()}`}
+                        categories?.length ? categories.map(cat => <Link key={cat?._id} href={`/category/${cat.name.toLowerCase()}`}
                                                                         className="block text-sm text-gray-500 capitalize my-2
                                                                                     hover:transition duration-[400ms] hover:text-gray-800">
                             {cat.name}

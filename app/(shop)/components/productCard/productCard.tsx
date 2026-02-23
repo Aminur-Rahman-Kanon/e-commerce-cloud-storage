@@ -25,15 +25,12 @@ export default function ProductCard ({ product }: { product: ItemType }) {
     
     return (
         <Link href={`/product/${product._id}`}
-              className='w-full w-[170px] h-full group flex flex-col justify-cetner items-center
+              className='w-full h-full group flex flex-col justify-cetner items-center
                         sm:w-[220px]
                         md:w-[250px]
                         lg:w-[280px]'>
 
-            <div className='relative w-[150px] h-[150px] aspect-[3/4] z-20
-                            sm:w-[200px] sm:h-[200px]
-                            md:w-[230px] md:h-[230px]
-                            lg:w-[260px] md:h-[260px]'>
+            <div className='relative w-[calc(100%-30px)] aspect-square z-20'>
                 <Image src={product.image[0]}
                         alt={product.name}
                         fill

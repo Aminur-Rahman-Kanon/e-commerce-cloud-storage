@@ -14,7 +14,7 @@ export default async function Products() {
     if (!categories.length) return;
 
     const displayCategories = categories.map(cat => <div key={cat._id}
-                                className="w-full h-full flex flex-col justify-center items-center spacey-4 my-10">
+                                className="w-full h-full flex flex-col justify-center items-center spacey-4">
         <h2 className="relative text-md font-light tracking-wider uppercase text-gray-500
                         after:content-[''] after:absolute after:bottom-[-10px] after:left-1/2
                         after:-translate-x-1/2 after:w-[75%] after:h-[1px] after:bg-gray-300 after:rounded-full
@@ -31,18 +31,16 @@ export default async function Products() {
             }
         </div>
         <Link href={`/category/${cat.name}`}
-              className="w-full h-[40px] bg-gray-800 text-white text-xs rounded
-                        flex justify-center items-center
-                        sm:w-[220px]
-                        md:text-sm md:w-[250px]
-                        lg:text-md lg:w-[280px]">
+              className="w-full h-[40px] bg-white text-gray-600 text-xs rounded border border-gray-500
+                        flex justify-center items-center hover:bg-gray-500 hover:text-white transition-all duration-300 ease-out
+                        sm:w-[220px]">
             SHOW ALL ITEMS
         </Link>
     </div>
     )
 
     return (
-        <div className="w-full max-w-[1400px] mx-auto space-y-10 p-3">
+        <div className="w-full max-w-[1400px] mx-auto my-10 space-y-10 p-3">
             {
                 displayCategories
             }

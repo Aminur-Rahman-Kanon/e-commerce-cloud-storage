@@ -11,6 +11,17 @@ export async function getCategories() {
   return categories.map(serializeCategory);
 }
 
+export async function getSingleCategory (name:string) {
+    if (!name) return;
+
+    try {
+        const category = await Category.findOne({ name }).populate('items').lean({ virtuals: true });
+        return serializeCategory(category);
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 export async function getSingleItem(id: string): Promise<ItemType | null> {
     await connectDB();
 

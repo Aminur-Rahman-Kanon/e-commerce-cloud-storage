@@ -79,11 +79,11 @@ export default function MobileMenu({ categories }: Props) {
                         </button>
                         <div className='flex flex-col justify-start items-start gap-y-5'>
                             {
-                                categories?.length ? categories.map(cat => <Link key={cat._id}
-                                                                                 href={`/categories/${cat.name}`}
+                                categories?.length ? categories.map(cat => <span key={cat._id}
+                                                                                 onClick={() => routeAndMobileMenuHandler(`/category/${cat.name}`)}
                                                                                  className='text-lg text-gray-600 capitalize'>
                                                                             {cat.name}
-                                                                            </Link>)
+                                                                            </span>)
                                 :
                                 'No Items'
                             }
