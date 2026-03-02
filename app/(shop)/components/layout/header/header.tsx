@@ -15,9 +15,9 @@ export default async function Header () {
                         lg:grid-cols-[repeat(3,250px)]">
             <MobileMenuBtn />
 
-            <MobileMenu categories={categories} />
+            <MobileMenu />
             
-            <Navbar categories={categories} />
+            <Navbar />
 
             <div className="w-full relative w-full flex justify-center items-center">
                 <Image src={'/images/logo/logo_1.png'}
