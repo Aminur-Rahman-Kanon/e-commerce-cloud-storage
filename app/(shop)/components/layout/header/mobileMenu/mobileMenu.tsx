@@ -7,17 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare, faInstagramSquare, faTiktok, faYoutubeSquare } from '@fortawesome/free-brands-svg-icons';
 import { useMobileMenu } from '@/app/store/mobileMenu/useMobileMenu';
 import Image from 'next/image';
-import { CategoriesType } from '@/app/(admin)/admin/type/categories';
 
-type Props = {
-    categories: CategoriesType[]
-}
-
-export default function MobileMenu({ categories }: Props) {
+export default function MobileMenu() {
   const router = useRouter();
   const {
     isMobileMenuOpen,
     isCategoryMenuOpen,
+    navbarCategory,
     closeMobileMenu,
     openCategoryMenu,
     closeCategoryMenu
@@ -65,10 +61,10 @@ export default function MobileMenu({ categories }: Props) {
                              onClick={openCategoryMenu}>
                             Category
                         </div>
-                        <Link href="/about-us"
+                        <Link href="/new-items"
                               className="hover:text-gray-900 text-lg"
                               onClick={() => routeAndMobileMenuHandler('/about-us')}>
-                            About Us
+                            What's New
                         </Link>
                     </nav>
                     <div className={`absolute top-0 left-0 w-full h-full transition transform duration-400 ${toggleCategoryView}
@@ -79,7 +75,7 @@ export default function MobileMenu({ categories }: Props) {
                         </button>
                         <div className='flex flex-col justify-start items-start gap-y-5'>
                             {
-                                categories?.length ? categories.map(cat => <span key={cat._id}
+                                navbarCategory?.length ? navbarCategory.map(cat => <span key={cat._id}
                                                                                  onClick={() => routeAndMobileMenuHandler(`/category/${cat.name}`)}
                                                                                  className='text-lg text-gray-600 capitalize'>
                                                                             {cat.name}

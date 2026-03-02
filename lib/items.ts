@@ -42,3 +42,19 @@ export async function getSingleItem(id: string): Promise<ItemType | null> {
         return null;
     }
 }
+
+export async function getNewItems () {
+    await connectDB();
+
+    const newItem = await Category.find({ isActive: true })
+    .populate({
+        path: 'items',
+        match: { isActive: true, isNewItem: true }
+    }).lean({ virtual: true });
+
+    if (newItem.length) {
+        return newItem.map(cat => serializeCategory(cat));
+    }
+
+    return newItem;
+}

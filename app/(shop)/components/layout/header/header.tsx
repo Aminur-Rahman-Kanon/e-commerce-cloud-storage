@@ -1,4 +1,3 @@
-import Link from "next/link";
 import Image from "next/image";
 import MobileMenuBtn from "./mobileMenuBtn/mobileMenuBtn";
 import HeaderActions from "./headerActions/headerActions";

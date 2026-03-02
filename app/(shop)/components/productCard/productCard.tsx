@@ -31,10 +31,18 @@ export default function ProductCard ({ product }: { product: ItemType }) {
                         lg:w-[280px]'>
 
             <div className='relative w-[calc(100%-30px)] aspect-square z-20'>
-                <Image src={product.image[0]}
-                        alt={product.name}
-                        fill
-                        className='object-cover rounded' />
+                {
+                    product.image[0] ? 
+                        <Image src={product.image[0]}
+                                alt={product.name}
+                                fill
+                                className='object-cover rounded-md' />
+                        :
+                        <Image src={'/images/icons/placeholder_3.png'}
+                                alt='No Image'
+                                fill
+                                className='object-cover rounded' />
+                }
             </div>
 
             <div className='relative w-full h-full flex flex-col justify-end items-center'>
