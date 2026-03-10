@@ -66,7 +66,7 @@ export default function Page () {
                                 <div className="flex justify-center items-center p-2">
                                     <Image src={itm.item.image[0]}
                                             alt={itm.item.name}
-                                            width={50}
+                                            width={70}
                                             height={70}
                                             className="object-cover" />
                                 </div>
