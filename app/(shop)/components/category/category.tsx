@@ -3,8 +3,6 @@
 import { useState, useEffect } from 'react';
 import { CategoriesType } from '@/app/(admin)/admin/type/categories';
 import { ItemType } from '@/app/(admin)/admin/type/items';
-import Image from 'next/image';
-import Link from 'next/link';
 import CategoriesCard from '../categoriesCard/categoriesCard';
 import CategoriesItemCard from '../categoriesItemCard/categoriesItemCard';
 
@@ -17,12 +15,14 @@ export default function Category ({ category }: Props) {
 
     const [items, setItems] = useState<ItemType[] | []>([]);
 
+    const [sortByPrice, setSortByPrice] = useState<string>('');
+
     const [onSale, setOnSale] = useState<boolean>(false);
     const [isNew, setIsNew] = useState<boolean>(false);
     const [isSpecial, setIsSpecial] = useState<boolean>(false);
 
     useEffect(() => {
-        let cat:ItemType[] = category.items!;
+        let cat:ItemType[] = [...category.items! ?? []]
 
         if (onSale){
             cat = cat?.filter(itm => itm.isSale === onSale)
@@ -36,9 +36,28 @@ export default function Category ({ category }: Props) {
             cat = cat?.filter(itm => itm.isNewItem === isNew);
         }
 
+        if (sortByPrice === 'des') {
+            cat = [...cat].sort((a, b) => 
+                (b.prices?.discounted ? b.prices?.discounted : b.prices?.base!)
+                -
+                (a.prices?.discounted ? a.prices.discounted : a.prices?.base!)
+            )
+        }
+
+        if (sortByPrice === 'asc') {
+            cat = [...cat].sort((a, b) => 
+                (a.prices?.discounted ? a.prices.discounted : a.prices?.base!)
+                - 
+                (b.prices?.discounted ? b.prices.discounted : b.prices?.base!)
+            )
+        }
+
         setItems(cat);
-        
-    }, [onSale, isNew, isSpecial]);
+    }, [onSale, isNew, isSpecial, sortByPrice]);
+
+    const test = (e:React.ChangeEvent<HTMLSelectElement>) => {
+        setSortByPrice(e.target.value)
+    }
 
     return (
         <div className='w-full max-w-[1800px] mx-auto my-[50px] flex flex-col justify-center items-start gap-y-10 p-3 overflow-hidden'>
@@ -63,10 +82,11 @@ export default function Category ({ category }: Props) {
                                 Price
                             </h3>
                             <select className='border border-gray-500 bg-white text-sm text-gray-600
-                                                xl:mt-3 px-1'>
+                                                xl:mt-3 px-1'
+                                    onChange={test}>
                                 <option disabled>Please select</option>
-                                <option value={'high'}>From low to high</option>
-                                <option value={'low'}>From high to low</option>
+                                <option value={'asc'}>From low to high</option>
+                                <option value={'des'}>From high to low</option>
                             </select>
                         </div>
                         <div className='w-full flex flex-row justify-start items-start gap-x-2

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import MobileMenuBtn from "./mobileMenuBtn/mobileMenuBtn";
 import HeaderActions from "./headerActions/headerActions";
 import { getCategories } from "@/lib/items";
@@ -19,14 +20,15 @@ export default async function Header () {
             
             <Navbar />
 
-            <div className="w-full relative w-full flex justify-center items-center">
+            <Link href="/"
+                className="w-full relative w-full flex justify-center items-center">
                 <Image src={'/images/logo/logo_1.png'}
                         alt="antorbon"
                         width={80}
                         height={60}
                         className="w-[75px] h-[55px] object-cover 
                                     lg:w-[80px] lg:h-[60px]" />
-            </div>
+            </Link>
 
             <HeaderActions />
         </div>

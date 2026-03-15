@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookSquare, faInstagramSquare, faTiktok, faYoutubeSquare } from '@fortawesome/free-brands-svg-icons';
 import { useMobileMenu } from '@/app/store/mobileMenu/useMobileMenu';
 import Image from 'next/image';
+import { useEffect } from 'react';
 
 export default function MobileMenu() {
   const router = useRouter();
@@ -18,6 +19,19 @@ export default function MobileMenu() {
     openCategoryMenu,
     closeCategoryMenu
   } = useMobileMenu();
+
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+        document.body.style.overflow = 'hidden'
+    }
+    else {
+        document.body.style.overflow = ''
+    }
+
+    return () => {
+        document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen]);
 
   const toggleMenuView = isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full';
   const toggleCategoryView = isCategoryMenuOpen ? 'translate-x-0' : '-translate-x-full';

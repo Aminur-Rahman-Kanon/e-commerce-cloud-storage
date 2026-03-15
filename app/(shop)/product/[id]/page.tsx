@@ -53,7 +53,7 @@ export default async function Page ({ params }: PageProps) {
     };
 
     return (
-        <div className="w-full my-15 lg:my-20">
+        <div className="w-full my-12 lg:my-20">
             <Product product={product} />
         </div>
     )
