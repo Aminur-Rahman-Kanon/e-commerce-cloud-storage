@@ -102,7 +102,7 @@ export default function MobileMenu() {
                 </div>
             </div>
 
-            <div className='w-full flex justify-between items-start mb-[50px]'>
+            <div className='w-full flex justify-between items-start mb-[100px]'>
                 <Link href={'#'} className='text-2xl text-gray-600'>
                     <FontAwesomeIcon icon={faFacebookSquare} />
                 </Link>

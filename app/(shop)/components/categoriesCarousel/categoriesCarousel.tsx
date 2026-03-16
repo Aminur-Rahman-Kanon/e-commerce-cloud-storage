@@ -1,11 +1,13 @@
 'use client';
 
 import Image from "next/image";
+import Link from "next/link";
 
 export default function CategoriesCarousel () {
     return (
         <div className="w-full max-w-[1800px] mx-auto my-20 p-2 grid grid-cols-4 justify-center items-start">
-            <div className="w-full flex flex-col justify-center items-center gap-y-5">
+            <Link href='/category/indoor plants'
+                  className="w-full flex flex-col justify-center items-center gap-y-5">
                 <div className="relative w-full max-w-[50px] aspect-square overflow-hidden
                                 md:max-w-[200px]">
                     <Image src={'/images/categories/plants.png'}
@@ -17,8 +19,9 @@ export default function CategoriesCarousel () {
                                 md:text-sm">
                     Indoor Plants
                 </h4>
-            </div>
-            <div className="w-full flex flex-col justify-center items-center gap-y-5">
+            </Link>
+            <Link href='/category/herbal medicine'
+                  className="w-full flex flex-col justify-center items-center gap-y-5">
                 <div className="relative w-full max-w-[50px] aspect-square overflow-hidden
                                 md:max-w-[200px]">
                     <Image src={'/images/categories/herbal.png'}
@@ -30,8 +33,9 @@ export default function CategoriesCarousel () {
                                 md:text-sm">
                     Herbal Medicine
                 </h4>
-            </div>
-            <div className="w-full flex flex-col justify-center items-center gap-y-5">
+            </Link>
+            <Link href='/category/home decoration'
+                  className="w-full flex flex-col justify-center items-center gap-y-5">
                 <div className="relative w-full max-w-[50px] aspect-square overflow-hidden
                                 md:max-w-[200px]">
                     <Image src={'/images/categories/decoration.png'}
@@ -43,8 +47,9 @@ export default function CategoriesCarousel () {
                                 md:text-sm">
                     Home Decoration
                 </h4>
-            </div>
-            <div className="w-full flex flex-col justify-center items-center gap-y-5">
+            </Link>
+            <Link href='/category/health & beauty'
+                  className="w-full flex flex-col justify-center items-center gap-y-5">
                 <div className="relative w-full max-w-[50px] aspect-square overflow-hidden
                                 md:max-w-[200px]">
                     <Image src={'/images/categories/health.png'}
@@ -56,7 +61,7 @@ export default function CategoriesCarousel () {
                                 md:text-sm">
                     Health & Beauty
                 </h4>
-            </div>
+            </Link>
         </div>
     )
 }
